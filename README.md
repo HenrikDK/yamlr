@@ -1,18 +1,6 @@
-Yamale (ya·ma·lē)
-=================
+# Fork of Yamale (ya·ma·lē)
 
-| :warning: Ensure that your schema definitions come from internal or trusted sources. Yamale does not protect against intentionally malicious schemas. |
-|:------------|
-
-<img src="https://github.com/23andMe/Yamale/blob/master/yamale.png?raw=true" alt="Yamale" width="400"/>
-
-A schema and validator for YAML.
-
-What's YAML? See the current spec [here](http://www.yaml.org/spec/1.2/spec.html) and an introduction
-to the syntax [here](https://github.com/Animosity/CraftIRC/wiki/Complete-idiot's-introduction-to-yaml).
-
-[![Build Status](https://github.com/23andMe/Yamale/actions/workflows/run-tests.yml/badge.svg)](https://github.com/23andMe/Yamale/actions/workflows/run-tests.yml)
-[![PyPI](https://img.shields.io/pypi/v/yamale.svg)](https://pypi.python.org/pypi/yamale)
+Readme docs kept unchanged:
 
 Requirements
 ------------
@@ -587,53 +575,3 @@ human:
   awesome: True
 ```
 
-Writing Tests
--------------
-To validate YAML files when you run your program's tests use Yamale's YamaleTestCase
-
-Example:
-
-```python
-class TestYaml(YamaleTestCase):
-    base_dir = os.path.dirname(os.path.realpath(__file__))
-    schema = 'schema.yaml'
-    yaml = 'data.yaml'
-    # or yaml = ['data-*.yaml', 'some_data.yaml']
-
-    def runTest(self):
-        self.assertTrue(self.validate())
-```
-
-`base_dir`: String path to prepend to all other paths. This is optional.
-
-`schema`: String of path to the schema file to use. One schema file per test case.
-
-`yaml`: String or list of yaml files to validate. Accepts globs.
-
-Developers
-----------
-### Linting + Formatting
-Yamale is formatted with [ruff](https://github.com/astral-sh/ruff). There is a github action enforcing
-ruff formatting and linting rules. You can run this locally via `make lint` or by installing
-the pre-commit hooks via `make install-hooks`
-
-### Testing
-Yamale uses [Tox](https://tox.readthedocs.org/en/latest/) to run its tests against multiple Python
-versions. To run tests, first checkout Yamale, install Tox, then run `make test` in Yamale's root
-directory. You may also have to install the correct Python versions to test with as well.
-
-NOTE on Python versions: `tox.ini` specifies the lowest and highest versions of Python supported by
-Yamale. Unless your development environment is configured to support testing against multiple Python
-versions, one or more of the test branches may fail. One method of enabling testing against multiple
-versions of Python is to install `pyenv` and `tox-pyenv` and to use `pyenv install` and `pyenv local`
-to ensure that tox is able to locate appropriate Pythons.
-
-### Releasing
-Yamale uses Github Actions to upload new tags to PyPi.
-To release a new version:
-
-1. Make a commit with the new version number in `yamale/VERSION`.
-1. Run tests for good luck.
-1. Run `make release`.
-
-Github Actions will take care of the rest.
