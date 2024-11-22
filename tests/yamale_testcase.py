@@ -4,7 +4,7 @@ import itertools
 
 from unittest import TestCase
 
-import yamale
+import yamale.yamale as yamale
 
 class YamaleTestCase(TestCase):
     """TestCase for easily validating YAML in your own tests.
