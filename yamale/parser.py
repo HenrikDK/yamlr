@@ -34,6 +34,7 @@ def parse(validator_string, validators=None):
         tree = ast.parse(validator_string, mode="eval")
         _validate_expr(tree.body, validators)
         # evaluate with access to a limited global scope only
+        ## TODO: remove eval
         return eval(compile(tree, "<ast>", "eval"), {"__builtins__": safe_builtins}, validators)
     except (SyntaxError, NameError, TypeError) as e:
         raise SyntaxError("Invalid schema expression: '%s'. " % validator_string + str(e))
