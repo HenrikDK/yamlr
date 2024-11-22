@@ -4,7 +4,7 @@ import contextlib
 import pytest
 
 from yamale import __main__ as command_line
-from yamale.yamale import YamaleError
+from yamale import YamaleError
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
