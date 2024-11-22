@@ -1,5 +1,5 @@
-from yamale.schema import Schema
-
+from yamale import schema, readers
+import traceback
 
 class YamaleError(ValueError):
     def __init__(self, results):
@@ -10,19 +10,18 @@ class YamaleError(ValueError):
 
 def make_schema(path=None, validators=None, content=None):
     # validators = None means use default.
-    # Import readers here so we can get version information in setup.py.
-    from . import readers
-
     raw_schemas = readers.parse_yaml(path, content=content)
     if not raw_schemas:
         raise ValueError("{} is an empty file!".format(path))
+
     # First document is the base schema
     try:
-        s = Schema(raw_schemas[0], path, validators=validators)
+        s = readers.process_schema(raw_schemas[0], path, validators=validators)
         # Additional documents contain Includes.
-        for raw_schema in raw_schemas[1:]:
-            s.add_include(raw_schema)
+        #for raw_schema in raw_schemas[1:]:
+        #    s.add_include(raw_schema)
     except (TypeError, SyntaxError) as e:
+        print(traceback.format_exc())
         error = "Schema error in file %s\n" % path
         error += str(e)
         raise SyntaxError(error)
