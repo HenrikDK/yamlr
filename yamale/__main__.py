@@ -10,18 +10,18 @@ import yamale.yamale as yamale
 schemas = {}
 
 
-def _validate(schema_path, data_path, parser, strict, _raise_error):
+def _validate(schema_path, data_path, strict, _raise_error):
     schema = schemas.get(schema_path)
     try:
         if not schema:
-            schema = yamale.make_schema(schema_path, parser)
+            schema = yamale.make_schema(schema_path)
             schemas[schema_path] = schema
     except (SyntaxError, ValueError) as e:
         results = [Result([str(e)])]
         if not _raise_error:
             return results
         raise YamaleError(results)
-    data = yamale.make_data(data_path, parser)
+    data = yamale.make_data(data_path)
     return yamale.validate(schema, data, strict, _raise_error)
 
 
@@ -53,15 +53,15 @@ def _find_schema(data_path, schema_name):
     return _find_data_path_schema(data_path, schema_name)
 
 
-def _validate_single(yaml_path, schema_name, parser, strict):
+def _validate_single(yaml_path, schema_name, strict):
     print("Validating %s..." % yaml_path)
     s = _find_schema(yaml_path, schema_name)
     if not s:
         raise ValueError("Invalid schema name for '{}' or schema not found.".format(schema_name))
-    _validate(s, yaml_path, parser, strict, True)
+    _validate(s, yaml_path, strict, True)
 
 
-def _validate_dir(root, schema_name, cpus, parser, strict):
+def _validate_dir(root, schema_name, cpus, strict):
     pool = Pool(processes=cpus)
     res = []
     error_messages = []
@@ -72,7 +72,7 @@ def _validate_dir(root, schema_name, cpus, parser, strict):
                 d = os.path.join(root, f)
                 s = _find_schema(d, schema_name)
                 if s:
-                    res.append(pool.apply_async(_validate, (s, d, parser, strict, False)))
+                    res.append(pool.apply_async(_validate, (s, d, strict, False)))
                 else:
                     print("No schema found for: %s" % d)
 
@@ -87,12 +87,12 @@ def _validate_dir(root, schema_name, cpus, parser, strict):
         raise ValueError("\n----\n".join(set(error_messages)))
 
 
-def _router(root, schema_name, cpus, parser, strict=True):
+def _router(root, schema_name, cpus, strict=True):
     root = os.path.abspath(root)
     if os.path.isfile(root):
-        _validate_single(root, schema_name, parser, strict)
+        _validate_single(root, schema_name, strict)
     else:
-        _validate_dir(root, schema_name, cpus, parser, strict)
+        _validate_dir(root, schema_name, cpus, strict)
 
 
 def main():
@@ -103,17 +103,11 @@ def main():
     parser.add_argument("-s", "--schema", default="schema.yaml", help="filename of schema. Default is schema.yaml.")
     parser.add_argument("-n", "--cpu-num", default=4, type=int, help="number of CPUs to use. Default is 4.")
     parser.add_argument(
-        "-p",
-        "--parser",
-        default="pyyaml",
-        help='YAML library to load files. Choices are "ruamel" or "pyyaml" (default).',
-    )
-    parser.add_argument(
         "--no-strict", action="store_true", help="Disable strict mode, unexpected elements in the data will be accepted."
     )
     args = parser.parse_args()
     try:
-        _router(args.path, args.schema, args.cpu_num, args.parser, not args.no_strict)
+        _router(args.path, args.schema, args.cpu_num, not args.no_strict)
     except (SyntaxError, NameError, TypeError, ValueError) as e:
         print("Validation failed!\n%s" % str(e))
         exit(1)

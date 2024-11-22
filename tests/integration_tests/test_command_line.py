@@ -8,7 +8,7 @@ from yamale import YamaleError
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
-parsers = ["pyyaml", "PyYAML", "ruamel"]
+parsers = ["pyyaml", "PyYAML"]
 
 
 @contextlib.contextmanager
@@ -122,7 +122,6 @@ def test_bad_strict():
             "tests/fixtures/command_line/yamls/required_keys_extra_element.yaml",
             "tests/fixtures/command_line/schemas/required_keys_schema.yaml",
             4,
-            "PyYAML",
             strict=True,
         )
     assert "map.key2: Unexpected element" in e.value.message
@@ -134,7 +133,6 @@ def test_bad_issue_54():
             "tests/fixtures/nested_issue_54.yaml",
             "tests/fixtures/nested.yaml",
             4,
-            "PyYAML",
             strict=True,
         )
     assert "string: Required field missing" in e.value.message
@@ -151,6 +149,5 @@ def test_nested_schema_issue_69():
     command_line._router(
         "tests/fixtures/command_line/nestedYaml", 
         "schema.yaml", 
-        1, 
-        "PyYAML"
+        1
     )

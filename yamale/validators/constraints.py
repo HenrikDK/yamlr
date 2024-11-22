@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 import re
 import datetime
 import ipaddress
@@ -13,9 +12,6 @@ class Constraint(object):
     is_active = False
 
     def __init__(self, value_type, kwargs):
-        self._parseKwargs(kwargs)
-
-    def _parseKwargs(self, kwargs):
         for kwarg, kwtype in self.keywords.items():
             value = self.get_kwarg(kwargs, kwarg, kwtype)
             setattr(self, kwarg, value)
