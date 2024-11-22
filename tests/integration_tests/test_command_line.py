@@ -110,7 +110,7 @@ def test_bad_dir():
     with pytest.raises(ValueError):
         command_line._router(
             "tests/command_line_fixtures/yamls", 
-            "tests/_invalid_/schemas/map_schema.yaml", 
+            "tests/command_line_fixtures/schemas/map_schema.yaml", 
             4, 
             "PyYAML"
         )
