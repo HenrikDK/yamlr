@@ -2,8 +2,8 @@ import argparse
 import glob
 import os
 from multiprocessing import Pool
-from .yamale_error import YamaleError
-from .schema.validation_results import Result
+from .yamale import YamaleError
+from .validation_results import Result
 from .version import __version__
 
 import yamale
