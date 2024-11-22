@@ -1,19 +1,9 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-"""
-Validate yaml files and check them against their schemas. Designed to be used outside of Vagrant.
-
-Just install Yamale:
-    pip install yamale
-"""
-
 import argparse
 import glob
 import os
 from multiprocessing import Pool
 from .yamale_error import YamaleError
-from .schema.validationresults import Result
+from .schema.validation_results import Result
 from .version import __version__
 
 import yamale
