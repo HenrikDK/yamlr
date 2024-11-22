@@ -113,7 +113,7 @@ def test_bad_strict():
 
 
 def test_bad_issue_54():
-    with pytest.raises(yamale_error.YamaleError) as e:
+    with pytest.raises(YamaleError) as e:
         command_line._router(
             "yamale/tests/fixtures/nested_issue_54.yaml",
             "nested.yaml",
