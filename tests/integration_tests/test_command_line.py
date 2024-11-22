@@ -25,8 +25,8 @@ def scoped_change_dir(new_dir):
 def test_bad_yaml(parser):
     with pytest.raises(ValueError) as e:
         command_line._router(
-            "yamale/tests/command_line_fixtures/yamls/bad.yaml",
-            "schema.yaml",
+            "tests/command_line_fixtures/yamls/bad.yaml",
+            "tests/command_line_fixtures/schema.yaml",
             1,
             parser,
         )
@@ -37,7 +37,7 @@ def test_bad_yaml(parser):
 def test_required_keys_yaml(parser):
     with pytest.raises(ValueError) as e:
         command_line._router(
-            "yamale/tests/command_line_fixtures/yamls/required_keys_bad.yaml",
+            "tests/command_line_fixtures/yamls/required_keys_bad.yaml",
             "required_keys_schema.yaml",
             1,
             parser,
@@ -47,13 +47,13 @@ def test_required_keys_yaml(parser):
 
 @pytest.mark.parametrize("parser", parsers)
 def test_good_yaml(parser):
-    command_line._router("yamale/tests/command_line_fixtures/yamls/good.yaml", "schema.yaml", 1, parser)
+    command_line._router("tests/command_line_fixtures/yamls/good.yaml", "schema.yaml", 1, parser)
 
 
 @pytest.mark.parametrize("parser", parsers)
 def test_good_relative_yaml(parser):
     command_line._router(
-        "yamale/tests/command_line_fixtures/yamls/good.yaml",
+        "tests/command_line_fixtures/yamls/good.yaml",
         "../schema_dir/external.yaml",
         1,
         parser,
@@ -62,14 +62,14 @@ def test_good_relative_yaml(parser):
 
 @pytest.mark.parametrize("parser", parsers)
 def test_good_relative_schema_in_subfolder(parser):
-    with scoped_change_dir("yamale/tests/command_line_fixtures/schema_dir"):
+    with scoped_change_dir("tests/command_line_fixtures/schema_dir"):
         command_line._router("../yamls/good.yaml", "external.yaml", 1, parser)
 
 
 @pytest.mark.parametrize("parser", parsers)
 def test_external_glob_schema(parser):
     command_line._router(
-        "yamale/tests/command_line_fixtures/yamls/good.yaml",
+        "tests/command_line_fixtures/yamls/good.yaml",
         os.path.join(dir_path, "command_line_fixtures/schema_dir/ex*.yaml"),
         1,
         parser,
