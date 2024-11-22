@@ -1,6 +1,6 @@
 import io
 import pytest
-from yamale.readers import yaml_reader
+from yamale import yaml_reader
 from tests import get_fixture
 
 parsers = ["pyyaml", "PyYAML", "ruamel"]
