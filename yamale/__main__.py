@@ -4,7 +4,6 @@ import os
 from multiprocessing import Pool
 from yamale.yamale import YamaleError
 from yamale.validation_results import Result
-from yamale.version import __version__
 
 import yamale.yamale as yamale
 
@@ -101,7 +100,6 @@ def main():
     parser.add_argument(
         "path", metavar="PATH", default="./", nargs="?", help="folder to validate. Default is current directory."
     )
-    parser.add_argument("-V", "--version", action="version", version=__version__)
     parser.add_argument("-s", "--schema", default="schema.yaml", help="filename of schema. Default is schema.yaml.")
     parser.add_argument("-n", "--cpu-num", default=4, type=int, help="number of CPUs to use. Default is 4.")
     parser.add_argument(
