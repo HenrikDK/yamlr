@@ -6,7 +6,7 @@ from yamale.yamale import YamaleError
 from yamale.validation_results import Result
 from yamale.version import __version__
 
-import yamale
+import yamale.yamale as yamale
 
 schemas = {}
 
