@@ -2,9 +2,9 @@ import argparse
 import glob
 import os
 from multiprocessing import Pool
-from .yamale import YamaleError
-from .validation_results import Result
-from .version import __version__
+from yamale.yamale import YamaleError
+from yamale.validation_results import Result
+from yamale.version import __version__
 
 import yamale
 

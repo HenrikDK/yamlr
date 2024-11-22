@@ -1,4 +1,4 @@
-from .schema import Schema
+from yamale.schema import Schema
 
 
 class YamaleError(ValueError):

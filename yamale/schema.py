@@ -1,7 +1,6 @@
-from .datapath import DataPath
-from .validation_results import ValidationResult
-from .. import syntax, util
-from .. import validators as val
+from yamale.validation_results import ValidationResult
+from yamale import syntax, util
+from yamale.validators import validators as val
 
 class DataPath(object):
     def __init__(self, *path):
