@@ -2,21 +2,6 @@ from yamale.validation_results import ValidationResult
 from yamale import parser, util
 from yamale.validators import validators as val
 
-class DataPath(object):
-    def __init__(self, *path):
-        self._path = path
-
-    def __add__(self, other):
-        dp = DataPath()
-        dp._path = self._path + other._path
-        return dp
-
-    def __str__(self):
-        return ".".join(map(str, (self._path)))
-
-    def __repr__(self):
-        return "DataPath({})".format(repr(self._path))
-
 
 class FatalValidationError(Exception):
     def __init__(self, error):
@@ -30,41 +15,8 @@ class Schema(object):
     Still acts like a dict.
     """
 
-    def __init__(self, schema_dict, name="", validators=None, includes=None):
-        self.validators = validators or val.DefaultValidators
-        self.dict = schema_dict
-        self.name = name
-        self._schema = self._process_schema(DataPath(), schema_dict, self.validators)
-        # if this schema is included it shares the includes with the top level
-        # schema
-        self.includes = {} if includes is None else includes
-
-    def add_include(self, type_dict):
-        for include_name, custom_type in type_dict.items():
-            t = Schema(custom_type, name=include_name, validators=self.validators, includes=self.includes)
-            self.includes[include_name] = t
-
-    def _process_schema(self, path, schema_data, validators):
-        """
-        Go through a schema and construct validators.
-        """
-        if util.is_map(schema_data) or util.is_list(schema_data):
-            for key, data in util.get_iter(schema_data):
-                schema_data[key] = self._process_schema(path + DataPath(key), data, validators)
-        else:
-            schema_data = self._parse_schema_item(path, schema_data, validators)
-        return schema_data
-
-    def _parse_schema_item(self, path, expression, validators):
-        try:
-            return parser.parse(expression, validators)
-        except SyntaxError as e:
-            # Tack on some more context and rethrow.
-            error = str(e) + " at node '%s'" % str(path)
-            raise SyntaxError(error)
-
     def validate(self, data, data_name, strict):
-        path = DataPath()
+        path = util.get_path()
         try:
             errors = self._validate(self._schema, data, path, strict)
         except FatalValidationError as e:
@@ -78,7 +30,7 @@ class Schema(object):
         Returns an array of errors.
         """
         errors = []
-        path = path + DataPath(key)
+        path = util.get_path(path, key)
         try:  # Pull value out of data. Data can be a map or a list/sequence
             data_item = data[key]
         except (KeyError, IndexError):  # Oops, that field didn't exist.
