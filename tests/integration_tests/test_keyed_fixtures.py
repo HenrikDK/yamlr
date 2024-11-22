@@ -1,7 +1,7 @@
 import os
 import pytest
-from yamale import YamaleError
-from test import YamaleTestCase as tc
+from yamale.yamale import YamaleError
+from tests.yamale_testcase import YamaleTestCase as tc
 
 data_folder = os.path.dirname(os.path.realpath(__file__))
 

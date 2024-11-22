@@ -1,6 +1,6 @@
 import re
 import os
-from yamale import YamaleTestCase
+from tests.yamale_testcase import YamaleTestCase
 from yamale.validators import DefaultValidators, Validator
 
 

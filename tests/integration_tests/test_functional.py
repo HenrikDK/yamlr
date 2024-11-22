@@ -1,7 +1,7 @@
 import io
 import pytest
 import re
-import yamale
+from yamale import yamale
 
 from tests import get_fixture
 from yamale import validators as val
