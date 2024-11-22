@@ -3,8 +3,8 @@ import pytest
 import re
 import yamale
 
-from . import get_fixture
-from .. import validators as val
+from tests import get_fixture
+from yamale import validators as val
 
 types = {"schema": "types.yaml", "bad": "types_bad_data.yaml", "good": "types_good_data.yaml"}
 

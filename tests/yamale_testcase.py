@@ -6,7 +6,6 @@ from unittest import TestCase
 
 import yamale
 
-
 class YamaleTestCase(TestCase):
     """TestCase for easily validating YAML in your own tests.
     `schema`: String of path to the schema file to use. One schema file per test case.

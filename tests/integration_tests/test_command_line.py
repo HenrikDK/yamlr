@@ -3,8 +3,8 @@ import contextlib
 
 import pytest
 
-from .. import command_line
-from .. import yamale_error
+from yamale import command_line
+from yamale import yamale_error
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 

@@ -1,7 +1,7 @@
 import io
 import pytest
-from .. import yaml_reader
-from yamale.tests import get_fixture
+from yamale.readers import yaml_reader
+from tests import get_fixture
 
 parsers = ["pyyaml", "PyYAML", "ruamel"]
 TYPES = get_fixture("types.yaml")
