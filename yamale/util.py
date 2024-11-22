@@ -1,5 +1,10 @@
 from collections.abc import Mapping, Sequence
 
+def get_path(path = '', key=''):
+    if len(key) == 0:
+        return path
+    
+    return f'{path}.{key}'
 
 def isstr(s):
     return isinstance(s, str)
