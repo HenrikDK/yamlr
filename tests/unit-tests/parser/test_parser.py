@@ -1,6 +1,6 @@
 from pytest import raises
 
-from yamale.syntax import parser as par
+from yamale import parser as par
 from yamale.validators.validators import (
     Validator,
     String,

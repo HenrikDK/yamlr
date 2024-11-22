@@ -1,5 +1,5 @@
 from yamale.validation_results import ValidationResult
-from yamale import syntax, util
+from yamale import parser, util
 from yamale.validators import validators as val
 
 class DataPath(object):
@@ -57,7 +57,7 @@ class Schema(object):
 
     def _parse_schema_item(self, path, expression, validators):
         try:
-            return syntax.parse(expression, validators)
+            return parser.parse(expression, validators)
         except SyntaxError as e:
             # Tack on some more context and rethrow.
             error = str(e) + " at node '%s'" % str(path)

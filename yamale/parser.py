@@ -1,6 +1,6 @@
 import ast
 
-from .. import validators as val
+from yamale.validators import validators as val
 
 safe_globals = ("True", "False", "None")
 safe_builtins = dict((f, __builtins__[f]) for f in safe_globals)
