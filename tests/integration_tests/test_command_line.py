@@ -25,8 +25,8 @@ def scoped_change_dir(new_dir):
 def test_bad_yaml(parser):
     with pytest.raises(ValueError) as e:
         command_line._router(
-            "tests/command_line_fixtures/yamls/bad.yaml",
-            "tests/command_line_fixtures/schemas/map_schema.yaml",
+            "tests/fixtures/command_line/yamls/bad.yaml",
+            "tests/fixtures/command_line/schemas/map_schema.yaml",
             1,
             parser,
         )
@@ -38,8 +38,8 @@ def test_bad_yaml(parser):
 def test_required_keys_yaml(parser):
     with pytest.raises(ValueError) as e:
         command_line._router(
-            "tests/command_line_fixtures/yamls/required_keys_bad.yaml",
-            "tests/command_line_fixtures/schemas/required_keys_schema.yaml",
+            "tests/fixtures/command_line/yamls/required_keys_bad.yaml",
+            "tests/fixtures/command_line/schemas/required_keys_schema.yaml",
             1,
             parser,
         )
@@ -49,8 +49,8 @@ def test_required_keys_yaml(parser):
 @pytest.mark.parametrize("parser", parsers)
 def test_good_yaml(parser):
     command_line._router(
-        "tests/command_line_fixtures/yamls/good.yaml", 
-        "tests/command_line_fixtures/schemas/map_schema.yaml", 
+        "tests/fixtures/command_line/yamls/good.yaml", 
+        "tests/fixtures/command_line/schemas/map_schema.yaml", 
         1, 
         parser
     )
@@ -59,8 +59,8 @@ def test_good_yaml(parser):
 @pytest.mark.parametrize("parser", parsers)
 def test_good_relative_yaml(parser):
     command_line._router(
-        "tests/command_line_fixtures/yamls/good.yaml",
-        "tests/command_line_fixtures/schemas/external.yaml",
+        "tests/fixtures/command_line/yamls/good.yaml",
+        "tests/fixtures/command_line/schemas/external.yaml",
         1,
         parser,
     )
@@ -68,10 +68,10 @@ def test_good_relative_yaml(parser):
 
 @pytest.mark.parametrize("parser", parsers)
 def test_good_relative_schema_in_subfolder(parser):
-    with scoped_change_dir("tests/command_line_fixtures/schemas"):
+    with scoped_change_dir("tests/fixtures/command_line/schemas"):
         command_line._router(
-            "tests/command_line_fixtures/yamls/good.yaml", 
-            "tests/command_line_fixtures/schemas/external.yaml", 
+            "tests/fixtures/command_line/yamls/good.yaml", 
+            "tests/fixtures/command_line/schemas/external.yaml", 
             1, 
             parser
         )
@@ -80,8 +80,8 @@ def test_good_relative_schema_in_subfolder(parser):
 @pytest.mark.parametrize("parser", parsers)
 def test_external_glob_schema(parser):
     command_line._router(
-        "tests/command_line_fixtures/yamls/good.yaml",
-        "tests/command_line_fixtures/schemas/ex*.yaml",
+        "tests/fixtures/command_line/yamls/good.yaml",
+        "tests/fixtures/command_line/schemas/ex*.yaml",
         1,
         parser,
     )
@@ -90,8 +90,8 @@ def test_external_glob_schema(parser):
 def test_empty_schema_file():
     with pytest.raises(ValueError, match="is an empty file!"):
         command_line._router(
-            "tests/command_line_fixtures/empty_schema/data.yaml",
-            "tests/command_line_fixtures/empty_schema/empty_schema.yaml",
+            "tests/fixtures/command_line/empty_schema/data.yaml",
+            "tests/fixtures/command_line/empty_schema/empty_schema.yaml",
             1,
             "PyYAML",
         )
@@ -99,8 +99,8 @@ def test_empty_schema_file():
 
 def test_external_schema():
     command_line._router(
-        "tests/command_line_fixtures/yamls/good.yaml",
-        "tests/command_line_fixtures/schemas/external.yaml",
+        "tests/fixtures/command_line/yamls/good.yaml",
+        "tests/fixtures/command_line/schemas/external.yaml",
         1,
         "PyYAML",
     )
@@ -109,8 +109,8 @@ def test_external_schema():
 def test_bad_dir():
     with pytest.raises(ValueError):
         command_line._router(
-            "tests/command_line_fixtures/yamls", 
-            "tests/command_line_fixtures/schemas/map_schema.yaml", 
+            "tests/fixtures/command_line/yamls", 
+            "tests/fixtures/command_line/schemas/map_schema.yaml", 
             4, 
             "PyYAML"
         )
@@ -119,8 +119,8 @@ def test_bad_dir():
 def test_bad_strict():
     with pytest.raises(ValueError) as e:
         command_line._router(
-            "tests/command_line_fixtures/yamls/required_keys_extra_element.yaml",
-            "tests/command_line_fixtures/schemas/required_keys_schema.yaml",
+            "tests/fixtures/command_line/yamls/required_keys_extra_element.yaml",
+            "tests/fixtures/command_line/schemas/required_keys_schema.yaml",
             4,
             "PyYAML",
             strict=True,
@@ -149,7 +149,7 @@ def test_bad_issue_54():
 
 def test_nested_schema_issue_69():
     command_line._router(
-        "tests/command_line_fixtures/nestedYaml", 
+        "tests/fixtures/command_line/nestedYaml", 
         "schema.yaml", 
         1, 
         "PyYAML"
