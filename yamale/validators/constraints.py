@@ -108,7 +108,7 @@ def validate_str_matches(value, constraint, kwargs):
     
     flags = 0
     for k, v in util.get_iter(regex_flags):
-        flags |= v if kwargs.pop(k, False) else 0
+        flags |= v if kwargs.get(k, False) else 0
 
     valid = True
     if matches is not None:
