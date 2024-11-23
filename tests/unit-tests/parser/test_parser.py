@@ -1,51 +1,36 @@
-from pytest import raises
+import pytest
 
 from yamale import parser as par
-from yamale.validators.validators import (
-    Validator,
-    String,
-    Regex,
-    Number,
-    Integer,
-    Boolean,
-    List,
-    Day,
-    Timestamp,
-    Ip,
-    Mac,
-)
 
+def test_basic_validators():
+    assert par.parse("String()")['name'] == 'String'
+    assert par.parse("str()")['name'] == 'str'
+    assert par.parse("regex()")['name'] == 'regex'
+    assert par.parse("num()")['name'] == 'num'
+    assert par.parse("int()")['name'] == 'int'
+    assert par.parse("day()")['name'] == 'day'
+    assert par.parse("timestamp()")['name'] == 'timestamp'
+    assert par.parse("bool()")['name'] == 'bool'
+    assert par.parse("ip()")['name'] == 'ip'
+    assert par.parse("mac()")['name'] == 'mac'
 
-def test_eval():
-    assert eval("String()") == String()
+def test_list_type_with_children():
+    result = par.parse("list(str())")
 
+    assert result['name'] == 'list'
+    assert result['children'][0]['name'] == 'str'
 
-def test_types():
-    assert par.parse("String()") == String()
-    assert par.parse("str()") == String()
-    assert par.parse("regex()") == Regex()
-    assert par.parse("num()") == Number()
-    assert par.parse("int()") == Integer()
-    assert par.parse("day()") == Day()
-    assert par.parse("timestamp()") == Timestamp()
-    assert par.parse("bool()") == Boolean()
-    assert par.parse("list(str())") == List(String())
-    assert par.parse("ip()") == Ip()
-    assert par.parse("mac()") == Mac()
-
-
-def test_custom_type():
-    class my_validator(Validator):
-        pass
-
-    assert par.parse("custom()", {"custom": my_validator}) == my_validator()
-
+def test_custom_validator():
+    result = par.parse("custom()", {"custom": ''})
+    assert result['name'] == 'custom'
 
 def test_required():
-    assert par.parse("str(required=True)").is_required
-    assert par.parse("str(required=False)").is_optional
+    result = par.parse("str(required=True)")
+    assert result['kw_args']['required'] == True
 
+    result = par.parse("str(required=False)")
+    assert result['kw_args']['required'] == False
 
 def test_syntax_error():
-    with raises(SyntaxError):
+    with pytest.raises(SyntaxError):
         par.parse("eval()")
