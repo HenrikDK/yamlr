@@ -6,6 +6,49 @@ from yamale.util import to_unicode
 from .base import Validator
 from .. import util
 
+def validate_min(value, constraint, kwargs):
+    errors = []
+    min = kwargs['min']
+    valid = min <= value
+    if not valid:
+        message = constraint['fail'] % (value, min)
+        errors.append(message)
+    return errors
+
+def validate_max(value, constraint, kwargs):
+    errors = []
+    max = kwargs['max']
+    valid = max >= value
+    if not valid:
+        message = constraint['fail'] % (value, max)
+        errors.append(message)
+    return errors
+
+def validate_length_min(value, constraint, kwargs):
+    errors = []
+    min = kwargs['min']
+    valid = min <= len(value)
+    if not valid:
+        message = constraint['fail'] % (value, min)
+        errors.append(message)
+    return errors
+
+def validate_length_max(value, constraint, kwargs):
+    errors = []
+    max = kwargs['max']
+    valid = max >= len(value)
+    if not valid:
+        message = constraint['fail'] % (value, max)
+        errors.append(message)
+    return errors
+
+constraints = {
+    'min': {'fail': "%s is less than %s", 'func': validate_min},
+    'max': {'fail': "%s is greater than %s", 'func': validate_max},
+    'length_min': {'fail': "Length of %s is less than %s", 'func': validate_length_min},
+    'length_max': {'fail': "Length of %s is greater than %s", 'func': validate_length_max},
+}
+
 
 class Constraint(object):
     keywords = {}  # Keywords and types accepted by this constraint
