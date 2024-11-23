@@ -120,70 +120,90 @@ def test_str_ends_with():
     assert len(func("c", constraint, args)) == 1
 
 def test_str_ends_with_ignore_case():
-    v = val.String(ends_with="abC", ignore_case=True)
-    assert v.is_valid("xyzabC")
-    assert v.is_valid("xyzabc")
-    assert not v.is_valid("cde")
-    assert not v.is_valid("C")
+    constraint = con.constraints['str_ends_with']
+    func = constraint['func']
+    args = {'ends_with':"abC", 'ignore_case': True}
 
-
-tmp = '''
-
-
+    assert len(func("xyzabC", constraint, args)) == 0
+    assert len(func("xyzabc", constraint, args)) == 0
+    assert len(func("cde", constraint, args)) == 1
+    assert len(func("C", constraint, args)) == 1
 
 def test_str_matches():
-    v = val.String(matches=r"^(abc)\1?de$")
-    assert v.is_valid("abcabcde")
-    assert not v.is_valid("abcabcabcde")
-    assert not v.is_valid("\12")
+    constraint = con.constraints['str_matches']
+    func = constraint['func']
+    args = {'matches':r"^(abc)\1?de$"}
 
-    v = val.String(matches=r"[a-z0-9]{3,}s\s$", ignore_case=True)
-    assert v.is_valid("b33S\v")
-    assert v.is_valid("B33s\t")
-    assert not v.is_valid(" b33s ")
-    assert not v.is_valid("b33s  ")
+    assert len(func("abcabcde", constraint, args)) == 0
+    assert len(func("abcabcabcde", constraint, args)) == 1
+    assert len(func("\12", constraint, args)) == 1
 
-    v = val.String(matches=r"A.+\d$", ignore_case=False, multiline=True)
-    assert v.is_valid("A_-3\n\n")
-    assert not v.is_valid("a!!!!!5\n\n")
+def test_str_matches_ignore_case():
+    constraint = con.constraints['str_matches']
+    func = constraint['func']
+    args = {'matches':r"[a-z0-9]{3,}s\s$", 'ignore_case': True}
 
-    v = val.String(matches=r".*^Ye.*s\.", ignore_case=True, multiline=True, dotall=True)
-    assert v.is_valid("YEeeEEEEeeeeS.")
-    assert v.is_valid("What?\nYes!\nBEES.\nOK.")
-    assert not v.is_valid("YES-TA-TOES?")
-    assert not v.is_valid("\n\nYaes.")
+    assert len(func("b33S\v", constraint, args)) == 0
+    assert len(func("B33s\t", constraint, args)) == 0
+    assert len(func(" b33s ", constraint, args)) == 1
+    assert len(func("b33s  ", constraint, args)) == 1
 
+def test_str_matches_multi():
+    constraint = con.constraints['str_matches']
+    func = constraint['func']
+    args = {'matches':r"A.+\d$", 'multiline': True}
+
+    assert len(func("A_-3\n\n", constraint, args)) == 0
+    assert len(func("a!!!!!5\n\n", constraint, args)) == 1
+
+def test_str_matches_ignore_case_multi_dotall():
+    constraint = con.constraints['str_matches']
+    func = constraint['func']
+    args = {'matches':r".*^Ye.*s\.", 'ignore_case': True, 'multiline': True, 'dotall': True}
+
+    assert len(func("YEeeEEEEeeeeS.", constraint, args)) == 0
+    assert len(func("What?\nYes!\nBEES.\nOK.", constraint, args)) == 0
+    assert len(func("YES-TA-TOES?", constraint, args)) == 1
+    assert len(func("\n\nYaes.", constraint, args)) == 1
 
 def test_char_exclude():
-    v = val.String(exclude="abcd")
-    assert v.is_valid("efg")
-    assert not v.is_valid("abc")
-    assert not v.is_valid("c")
+    constraint = con.constraints['str_char_exclude']
+    func = constraint['func']
+    args = {'exclude': "abcd"}
 
+    assert len(func("efg", constraint, args)) == 0
+    assert len(func("abc", constraint, args)) == 1
+    assert len(func("c", constraint, args)) == 1
 
 def test_char_exclude_igonre_case():
-    v = val.String(exclude="abcd", ignore_case=True)
-    assert v.is_valid("efg")
-    assert v.is_valid("Efg")
-    assert not v.is_valid("abc")
-    assert not v.is_valid("Def")
-    assert not v.is_valid("c")
+    constraint = con.constraints['str_char_exclude']
+    func = constraint['func']
+    args = {'exclude': "abcd", 'ignore_case': True}
 
+    assert len(func("efg", constraint, args)) == 0
+    assert len(func("Efg", constraint, args)) == 0
+    assert len(func("abc", constraint, args)) == 1
+    assert len(func("Def", constraint, args)) == 1
+    assert len(func("c", constraint, args)) == 1
 
 def test_ip4():
-    v = val.Ip(version=4)
-    assert v.is_valid("192.168.1.1")
-    assert v.is_valid("192.168.1.255")
-    assert v.is_valid("192.168.3.1/24")
-    assert not v.is_valid("2001:db8::")
-    assert not v.is_valid("2001:db8::/64")
+    constraint = con.constraints['ip_version']
+    func = constraint['func']
+    args = {'version': 4}
 
+    assert len(func("192.168.1.1", constraint, args)) == 0
+    assert len(func("192.168.1.255", constraint, args)) == 0
+    assert len(func("192.168.3.1/24", constraint, args)) == 0
+    assert len(func("2001:db8::", constraint, args)) == 1
+    assert len(func("2001:db8::/64", constraint, args)) == 1
 
 def test_ip6():
-    v = val.Ip(version=6)
-    assert not v.is_valid("192.168.1.1")
-    assert not v.is_valid("192.168.1.255")
-    assert not v.is_valid("192.168.3.1/24")
-    assert v.is_valid("2001:db8::")
-    assert v.is_valid("2001:db8::/64")
-'''
+    constraint = con.constraints['ip_version']
+    func = constraint['func']
+    args = {'version': 6}
+
+    assert len(func("192.168.1.1", constraint, args)) == 1
+    assert len(func("192.168.1.255", constraint, args)) == 1
+    assert len(func("192.168.3.1/24", constraint, args)) == 1
+    assert len(func("2001:db8::", constraint, args)) == 0
+    assert len(func("2001:db8::/64", constraint, args)) == 0
