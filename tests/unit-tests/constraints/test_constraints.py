@@ -37,71 +37,87 @@ def test_number_min():
     assert len(func(0.5, constraint, args)) == 0
     assert len(func(0.1, constraint, args)) == 1
 
-
-tmp = '''
 def test_timestamp_min():
-    v = val.Timestamp(min=datetime.datetime(2010, 1, 1))
-    assert v.is_valid(datetime.datetime(2010, 1, 1))
-    assert v.is_valid(datetime.datetime(2011, 2, 2))
-    assert not v.is_valid(datetime.datetime(2009, 12, 31))
+    constraint = con.constraints['min']
+    func = constraint['func']
+    args = {'min':datetime.datetime(2010, 1, 1)}
 
+    assert len(func(datetime.datetime(2010, 1, 1), constraint, args)) == 0
+    assert len(func(datetime.datetime(2011, 2, 2), constraint, args)) == 0
+    assert len(func(datetime.datetime(2009, 12, 31), constraint, args)) == 1
 
 def test_timestamp_max():
-    v = val.Timestamp(max=datetime.datetime(2010, 1, 1))
-    assert v.is_valid(datetime.datetime(2010, 1, 1))
-    assert v.is_valid(datetime.datetime(2009, 2, 2))
-    assert not v.is_valid(datetime.datetime(2010, 2, 2))
+    constraint = con.constraints['max']
+    func = constraint['func']
+    args = {'max':datetime.datetime(2010, 1, 1)}
 
+    assert len(func(datetime.datetime(2010, 1, 1), constraint, args)) == 0
+    assert len(func(datetime.datetime(2009, 2, 2), constraint, args)) == 0
+    assert len(func(datetime.datetime(2010, 2, 2), constraint, args)) == 1
 
 def test_day_min():
-    v = val.Day(min=datetime.date(2010, 1, 1))
-    assert v.is_valid(datetime.date(2010, 1, 1))
-    assert v.is_valid(datetime.date(2011, 2, 2))
-    assert not v.is_valid(datetime.date(2009, 12, 31))
+    constraint = con.constraints['min']
+    func = constraint['func']
+    args = {'min':datetime.date(2010, 1, 1)}
 
+    assert len(func(datetime.date(2010, 1, 1), constraint, args)) == 0
+    assert len(func(datetime.date(2011, 2, 2), constraint, args)) == 0
+    assert len(func(datetime.date(2009, 12, 31), constraint, args)) == 1
 
 def test_day_max():
-    v = val.Day(max=datetime.date(2010, 1, 1))
-    assert v.is_valid(datetime.date(2010, 1, 1))
-    assert v.is_valid(datetime.date(2009, 2, 2))
-    assert not v.is_valid(datetime.date(2010, 2, 2))
+    constraint = con.constraints['max']
+    func = constraint['func']
+    args = {'max':datetime.date(2010, 1, 1)}
 
+    assert len(func(datetime.date(2010, 1, 1), constraint, args)) == 0
+    assert len(func(datetime.date(2009, 2, 2), constraint, args)) == 0
+    assert len(func(datetime.date(2010, 2, 2), constraint, args)) == 1
 
 def test_str_equals():
-    v = val.String(equals="abcd")
-    assert v.is_valid("abcd")
-    assert not v.is_valid("abcde")
-    assert not v.is_valid("c")
+    constraint = con.constraints['str_equals']
+    func = constraint['func']
+    args = {'equals':"abcd"}
 
+    assert len(func("abcd", constraint, args)) == 0
+    assert len(func("abcde", constraint, args)) == 1
+    assert len(func("c", constraint, args)) == 1
 
 def test_str_equals_ignore_case():
-    v = val.String(equals="abcd", ignore_case=True)
-    assert v.is_valid("abCd")
-    assert not v.is_valid("abcde")
-    assert not v.is_valid("C")
+    constraint = con.constraints['str_equals']
+    func = constraint['func']
+    args = {'equals':"abcd", 'ignore_case': True}
 
+    assert len(func("abCd", constraint, args)) == 0
+    assert len(func("abcde", constraint, args)) == 1
+    assert len(func("C", constraint, args)) == 1
 
 def test_str_starts_with():
-    v = val.String(starts_with="abc")
-    assert v.is_valid("abcd")
-    assert not v.is_valid("bcd")
-    assert not v.is_valid("c")
+    constraint = con.constraints['str_starts_with']
+    func = constraint['func']
+    args = {'starts_with':"abc"}
 
+    assert len(func("abcd", constraint, args)) == 0
+    assert len(func("bcd", constraint, args)) == 1
+    assert len(func("c", constraint, args)) == 1
 
 def test_str_starts_with_ignore_case():
-    v = val.String(starts_with="abC", ignore_case=True)
-    assert v.is_valid("abCde")
-    assert v.is_valid("abcde")
-    assert not v.is_valid("bcd")
-    assert not v.is_valid("C")
+    constraint = con.constraints['str_starts_with']
+    func = constraint['func']
+    args = {'starts_with':"abC", 'ignore_case': True}
 
+    assert len(func("abCde", constraint, args)) == 0
+    assert len(func("abcde", constraint, args)) == 0
+    assert len(func("bcd", constraint, args)) == 1
+    assert len(func("C", constraint, args)) == 1
 
 def test_str_ends_with():
-    v = val.String(ends_with="abcd")
-    assert v.is_valid("abcd")
-    assert not v.is_valid("abcde")
-    assert not v.is_valid("c")
+    constraint = con.constraints['str_ends_with']
+    func = constraint['func']
+    args = {'ends_with':"abcd"}
 
+    assert len(func("abcd", constraint, args)) == 0
+    assert len(func("abcde", constraint, args)) == 1
+    assert len(func("c", constraint, args)) == 1
 
 def test_str_ends_with_ignore_case():
     v = val.String(ends_with="abC", ignore_case=True)
@@ -109,6 +125,10 @@ def test_str_ends_with_ignore_case():
     assert v.is_valid("xyzabc")
     assert not v.is_valid("cde")
     assert not v.is_valid("C")
+
+
+tmp = '''
+
 
 
 def test_str_matches():
@@ -166,5 +186,4 @@ def test_ip6():
     assert not v.is_valid("192.168.3.1/24")
     assert v.is_valid("2001:db8::")
     assert v.is_valid("2001:db8::/64")
-
 '''
