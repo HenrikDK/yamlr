@@ -1,3 +1,37 @@
+"""
+Check if ``value`` is valid.
+
+:returns: [errors] If ``value`` is invalid, otherwise [].
+"""
+def validate(validator, value, full_schema):
+    errors = []
+
+    constraints_inst = _create_constraints(validator['constraints'], validator['value_type'], validator['kw_args'])
+
+    # Make sure the type validates first.
+    valid = validator['func'](value, full_schema)
+    if not valid:
+        # todo: return line number, and message
+        errors.append(self.fail(value))
+        return errors
+
+    # Then validate all the constraints second.
+    for constraint in constraints_inst:
+        error = constraint.is_valid(value)
+        if error:
+            if isinstance(error, list):
+                errors.extend(error)
+            else:
+                errors.append(error)
+
+    return errors
+
+def _create_constraints(constraint_classes, value_type, kwargs):
+    constraints = []
+    for constraint in constraint_classes:
+        constraints.append(constraint(value_type, kwargs))
+    return constraints
+
 class Validator(object):
     """Base class for all Validators"""
 
