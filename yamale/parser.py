@@ -13,7 +13,10 @@ def _extract_expression(call_node, validators):
         
         func_name = call_node.func.id
         
-        kw_args = [{kw.arg: kw.value.value} for kw in call_node.keywords]
+        kw_args = {} 
+        for kw in call_node.keywords:
+          kw_args[kw.arg] = kw.value.value
+        
         args = [a.value for a in call_node.args if isinstance(a, ast.Constant)]
         result = {
             'name': func_name,
