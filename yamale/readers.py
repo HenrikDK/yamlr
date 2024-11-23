@@ -1,4 +1,4 @@
-import yaml
+import yaml, json
 from io import StringIO
 from yamale import util, parser
 from yamale.validators import validators as val
@@ -26,25 +26,28 @@ def parse_yaml(path=None, content=None):
 """
 Go through a schema and map validators.
 """
-def process_schema(schema_dict, name="", validators=[], includes={}):
+def process_schema(raw_schema, name="", validators=[], includes={}):
     result = {
         'validators': validators or val.DefaultValidators,
-        'schema_data': schema_dict,
+        'raw_schema': raw_schema,
         'name': name,
         'includes': includes
     }
 
-    result['schema'] = _process_schema('', schema_dict, validators)
+    schemas = json.loads(json.dumps(raw_schema))
 
-    # if this schema is included it shares the includes with the top level
-    # schema
+    result['schema'] = _process_schema('', schemas[0], validators)
+
+    # Additional documents contain Includes.
+    for schema in schemas[1:]:
+        _add_include(includes, schema, validators)
+
     return result
 
 
-def _add_include(self, type_dict):
-    for include_name, custom_type in type_dict.items():
-        t = Schema(custom_type, name=include_name, validators=self.validators, includes=self.includes)
-        self.includes[include_name] = t
+def _add_include(includes, schema, validators):
+    for include_name, custom_type in schema.items():
+        includes[include_name] = _process_schema(include_name, custom_type, validators)
 
 
 def _process_schema(path, schema_data, validators):

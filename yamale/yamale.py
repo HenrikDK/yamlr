@@ -10,16 +10,13 @@ class YamaleError(ValueError):
 
 def make_schema(path=None, validators=None, content=None):
     # validators = None means use default.
-    raw_schemas = readers.parse_yaml(path, content=content)
-    if not raw_schemas:
+    raw_schema = readers.parse_yaml(path, content=content)
+    if not raw_schema:
         raise ValueError("{} is an empty file!".format(path))
 
     # First document is the base schema
     try:
-        s = readers.process_schema(raw_schemas[0], path, validators=validators)
-        # Additional documents contain Includes.
-        #for raw_schema in raw_schemas[1:]:
-        #    s.add_include(raw_schema)
+        s = readers.process_schema(raw_schema, path, validators=validators)
     except (TypeError, SyntaxError) as e:
         print(traceback.format_exc())
         error = "Schema error in file %s\n" % path

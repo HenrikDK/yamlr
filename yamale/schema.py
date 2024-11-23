@@ -1,5 +1,5 @@
 from yamale.validation_results import ValidationResult
-from yamale import parser, util
+from yamale import util
 from yamale.validators import validators as val
 
 
