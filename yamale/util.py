@@ -7,6 +7,9 @@ def get_path(path = '', key=''):
     if len(key) == 0:
         return path
     
+    if len(path) == 0:
+        return f'{key}'
+    
     return f'{path}.{key}'
 
 def isstr(s):
