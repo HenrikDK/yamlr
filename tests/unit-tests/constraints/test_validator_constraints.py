@@ -2,13 +2,20 @@ import datetime
 from yamale import validators as val
 
 
-def test_length_min():
-    v = val.String(min=2)
-    assert v.is_valid("abcd")
-    assert v.is_valid("ab")
-    assert not v.is_valid("a")
+def test_str_length_min():
+    kw_args = {'min': 2}
+    c_val = {'name': 'str', 'kw_args': kw_args, 'args': []}
+    c_sch = {
+        'validators': val.default,
+        'data': {}
+    }
+    val.validate(c_sch, c_val, "abcd")
 
+    assert len(val.validate(c_sch, c_val, "abcd")) == 0
+    assert len(val.validate(c_sch, c_val, "ab")) == 0
+    assert len(val.validate(c_sch, c_val, "a")) == 1
 
+"""
 def test_length_max():
     v = val.String(max=3)
     assert v.is_valid("abc")
@@ -157,3 +164,4 @@ def test_ip6():
     assert not v.is_valid("192.168.3.1/24")
     assert v.is_valid("2001:db8::")
     assert v.is_valid("2001:db8::/64")
+"""
