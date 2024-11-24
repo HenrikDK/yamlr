@@ -1,9 +1,5 @@
 import ast
-
-from yamale.validators import validators as val
-
-safe_globals = ("True", "False", "None")
-safe_builtins = dict((f, __builtins__[f]) for f in safe_globals)
+from yamale import validators as val
 
 
 def _extract_expression(call_node, validators):
@@ -46,7 +42,8 @@ def _extract_expression(call_node, validators):
 
 
 def parse(validator_string, validators=None):
-    validators = validators or val.DefaultValidators
+    print(val)
+    validators = validators or val.default
     try:
         tree = ast.parse(validator_string, mode="eval")
         result = _extract_expression(tree.body, validators)

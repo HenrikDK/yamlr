@@ -1,7 +1,7 @@
 import yaml, json
 from io import StringIO
 from yamale import util, parser
-from yamale.validators import validators as val
+from yamale import wak_validators as val
 
 """
 Read yaml file using pyaml.
@@ -28,7 +28,7 @@ Go through a schema and map validators.
 """
 def process_schema(raw_schema, name="", validators=[], includes={}):
     result = {
-        'validators': validators or val.DefaultValidators,
+        'validators': validators or val.default,
         'raw_schema': raw_schema,
         'name': name,
         'includes': includes

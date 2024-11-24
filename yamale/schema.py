@@ -1,7 +1,6 @@
 from yamale.validation_results import ValidationResult
 from yamale import util
-from yamale.validators import validators as val
-
+from yamale import wak_validators as val
 
 class FatalValidationError(Exception):
     def __init__(self, error):
