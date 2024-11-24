@@ -18,7 +18,8 @@ def _extract_expression(call_node, validators):
             'name': func_name,
             'args': args,
             'kw_args': kw_args,
-            'children': []
+            'children': [],
+            '_type': 'call'
         }
     except AttributeError:
         raise SyntaxError("Schema expressions must be enclosed by a validator.")
@@ -42,7 +43,6 @@ def _extract_expression(call_node, validators):
 
 
 def parse(validator_string, validators=None):
-    print(val)
     validators = validators or val.default
     try:
         tree = ast.parse(validator_string, mode="eval")
