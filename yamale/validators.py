@@ -14,7 +14,7 @@ def validate_str(current_value, all_values, args = None, kw_args = None):
     valid = util.isstr(current_value)
     errors = []
     if not valid:
-        error = "'%s' is not a string" % (current_value)
+        error = "'%s' is not a str." % (current_value)
         errors.append(error)
     return errors
 
@@ -22,7 +22,7 @@ def validate_num(current_value, all_values, args = None, kw_args = None):
     valid = isinstance(current_value, (int, float)) and not isinstance(current_value, bool)
     errors = []
     if not valid:
-        error = "'%s' is not an int or float" % (current_value)
+        error = "'%s' is not an int or float." % (current_value)
         errors.append(error)
     return errors
 
@@ -30,7 +30,7 @@ def validate_int(current_value, all_values, args = None, kw_args = None):
     valid = isinstance(current_value, int) and not isinstance(current_value, bool)
     errors = []
     if not valid:
-        error = "'%s' is not an int" % (current_value)
+        error = "'%s' is not an int." % (current_value)
         errors.append(error)
     return errors
 
@@ -38,7 +38,7 @@ def validate_bool(current_value, all_values, args = None, kw_args = None):
     valid = isinstance(current_value, bool)
     errors = []
     if not valid:
-        error = "'%s' is not a bool" % (current_value)
+        error = "'%s' is not a bool." % (current_value)
         errors.append(error)
     return errors
 
@@ -46,7 +46,7 @@ def validate_enum(current_value, all_values, args = None, kw_args = None):
     valid = current_value in args
     errors = []
     if not valid:
-        error = "'%s' not in %s" % (current_value, args)
+        error = "'%s' not in %s." % (current_value, args)
         errors.append(error)
     return errors
 
@@ -54,7 +54,7 @@ def validate_day(current_value, all_values, args = None, kw_args = None):
     valid = isinstance(current_value, date)
     errors = []
     if not valid:
-        error = "'%s' is not a valid date (Format: YYYY-MM-DD)" % (current_value)
+        error = "'%s' is not a valid date (Format: YYYY-MM-DD)." % (current_value)
         errors.append(error)
     return errors
 
@@ -62,7 +62,7 @@ def validate_timestamp(current_value, all_values, args = None, kw_args = None):
     valid = isinstance(current_value, datetime)
     errors = []
     if not valid:
-        error = "'%s' is not a valid datetime (Format: YYYY-MM-DD HH:MM:SS)" % (current_value)
+        error = "'%s' is not a valid datetime (Format: YYYY-MM-DD HH:MM:SS)." % (current_value)
         errors.append(error)
     return errors
 
@@ -70,7 +70,7 @@ def validate_map(current_value, all_values, args = None, kw_args = None):
     valid = isinstance(current_value, Mapping)
     errors = []
     if not valid:
-        error = "'%s' is not a valid map" % (current_value)
+        error = "'%s' is not a valid map." % (current_value)
         errors.append(error)
     return errors
 
@@ -81,7 +81,7 @@ def validate_list(current_value, all_values, args = None, kw_args = None):
     valid = isinstance(current_value, Sequence) and not util.isstr(current_value)
     errors = []
     if not valid:
-        error = "'%s' is not a valid list" % (current_value)
+        error = "'%s' is not a valid list." % (current_value)
         errors.append(error)
     return errors
 
@@ -108,7 +108,7 @@ def validate_null(current_value, all_values, args = None, kw_args = None):
     valid = current_value is None
     errors = []
     if not valid:
-        error = "'%s' is not None" % (current_value)
+        error = "'%s' is not None." % (current_value)
         errors.append(error)
     return errors
 
@@ -139,7 +139,7 @@ def validate_ip(current_value, all_values, args = None, kw_args = None):
     
     errors = []
     if not valid:
-        error = "'%s' is not a valid ip" % (current_value)
+        error = "'%s' is not a valid ip." % (current_value)
         errors.append(error)
     return errors
 
@@ -153,7 +153,7 @@ def validate_mac(current_value, all_values, args = None, kw_args = None):
     
     errors = []
     if not valid:
-        error = "'%s' is not a valid mac address" % (current_value)
+        error = "'%s' is not a valid mac address." % (current_value)
         errors.append(error)
     return errors
 
@@ -167,7 +167,7 @@ def validate_semver(current_value, all_values, args = None, kw_args = None):
     
     errors = []
     if not valid:
-        error = "'%s' is not a valid mac address" % (current_value)
+        error = "'%s' is not a valid mac address." % (current_value)
         errors.append(error)
     return errors
 
