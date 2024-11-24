@@ -20,7 +20,7 @@ def validate(c_sch, data, data_name, strict):
 
 # Validate data with validator, returns an array of errors.
 def _validate(c_sch, c_val, data, path, strict):
-    print(f'v - {c_val.get('name', 'root')} - {c_val.keys()} - {data.keys()}')
+    print(f"v - {c_val.get('name', 'root')} - {c_val.keys()} - {data.keys()}")
     if (util.is_list(c_val) or util.is_map(c_val)) and '_type' not in c_val: # does not work, since we now use dicts for everything
         return _validate_static_map_list(c_sch, c_val, data, path, strict)
 
