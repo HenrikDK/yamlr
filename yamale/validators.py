@@ -177,7 +177,7 @@ default = {
     'num': {'func': validate_num, 'constraints': ['min', 'max'], '_type': 'validator'},
     'int': {'func': validate_int, 'constraints': ['min', 'max'], '_type': 'validator'},
     'bool': {'func': validate_bool, 'constraints': [], '_type': 'validator'},
-    'enum': {'func': validate_bool, 'constraints': [], '_type': 'validator'},
+    'enum': {'func': validate_enum, 'constraints': [], '_type': 'validator'},
     'day': {'func': validate_day, 'constraints': ['min', 'max'], '_type': 'validator'},
     'timestamp': {'func': validate_timestamp, 'constraints':['min', 'max'], '_type': 'validator'},
     'map': {'func': validate_map, 'constraints': ['length_min', 'length_max', 'key'], '_type': 'validator'},
@@ -199,7 +199,8 @@ def validate(c_sch, c_val, value):
     args = c_val['args']
     kw_args = c_val['kw_args']
     all_values = c_sch['data']
-
+    print(f'vv - {validator_name} - {args}')
+    print(f'vv - {validator}')
     errors = []
 
     # Make sure the type validates first.
