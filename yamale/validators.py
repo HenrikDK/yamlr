@@ -192,7 +192,14 @@ default = {
     'semver': {'func': validate_semver, 'constraints': [], '_type': 'validator'}
 }
 
-def validate(validator, value, all_values, args, kw_args):
+def validate(c_sch, c_val, value):
+    validator_name = c_val['name']
+    validator = c_sch['validators'][validator_name]
+
+    args = c_val['args']
+    kw_args = c_val['kw_args']
+    all_values = c_sch['data']
+
     errors = []
 
     # Make sure the type validates first.
@@ -201,20 +208,12 @@ def validate(validator, value, all_values, args, kw_args):
         # todo: return line number, and message
         return errors
 
-    constraints_inst = _create_constraints(validator['constraints'], validator['value_type'], validator['kw_args'])
     # Then validate all the constraints second.
-    for constraint in constraints_inst:
-        error = constraint.is_valid(value)
-        if error:
-            if isinstance(error, list):
-                errors.extend(error)
-            else:
-                errors.append(error)
+    for c_name in validator['constraints']:
+        constraint = con.constraints[c_name]
 
+        error = constraint['func'](value, constraint, kw_args)
+        if len(error) > 0:
+            errors.extend(error)
+    
     return errors
-
-def _create_constraints(constraint_classes, value_type, kwargs):
-    constraints = []
-    for constraint in constraint_classes:
-        constraints.append(constraint(value_type, kwargs))
-    return constraints
