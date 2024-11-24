@@ -114,7 +114,7 @@ def validate_null(current_value, all_values, args = None, kw_args = None):
 
 def validate_regex(current_value, all_values, args = None, kw_args = None):
     valid = current_value is None
-    regex_name = kw_args.get("name", 'any regex')
+    regex_name = kw_args.get("name", 'regex match')
     regex_flags = {"ignore_case": re.I, "multiline": re.M, "dotall": re.S}
     flags = 0
     for k, v in util.get_iter(regex_flags):
@@ -126,7 +126,7 @@ def validate_regex(current_value, all_values, args = None, kw_args = None):
 
     errors = []
     if not valid:
-        error = "'%s' did not match %s" % (current_value, regex_name)
+        error = "'%s' is not a %s." % (current_value, regex_name)        
         errors.append(error)
     return errors
 
@@ -158,8 +158,8 @@ def validate_mac(current_value, all_values, args = None, kw_args = None):
     return errors
 
 def validate_semver(current_value, all_values, args = None, kw_args = None):
+    # https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
     regexes = [
-        # https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
         re.compile(r"^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"),
     ]
     
