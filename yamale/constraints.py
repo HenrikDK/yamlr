@@ -182,7 +182,7 @@ constraints = {
     'str_starts_with': {'fail': "%s does not start with %s", 'func': validate_str_starts_with, '_type': 'constraint'},
     'str_ends_with': {'fail': "%s does not end with %s", 'func': validate_str_ends_with, '_type': 'constraint'},
     'str_matches': {'fail': "%s does not match regex '%s'", 'func': validate_str_matches, '_type': 'constraint'},
-    'str_char_exclude': {'fail': "'%s' contains excluded character '%s'", 'func': validate_character_exclude, '_type': 'constraint'},
+    'str_exclude': {'fail': "'%s' contains excluded character '%s'", 'func': validate_character_exclude, '_type': 'constraint'},
     'ip_version': {'fail': "IP version of %s is not %s", 'func': validate_ip_version, '_type': 'constraint'},
     'key': {'fail': "Key error - %s", 'func': validte_key, '_type': 'constraint'}
 }
