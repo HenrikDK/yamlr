@@ -23,26 +23,6 @@ class Schema(object):
             errors = [e.error]
         return ValidationResult(data_name, self.name, errors)
 
-    def _validate_item(self, validator, data, path, strict, key):
-        """
-        Fetch item from data at the position key and validate with validator.
-
-        Returns an array of errors.
-        """
-        errors = []
-        path = util.get_path(path, key)
-        try:  # Pull value out of data. Data can be a map or a list/sequence
-            data_item = data[key]
-        except (KeyError, IndexError):  # Oops, that field didn't exist.
-            # Optional? Who cares.
-            if isinstance(validator, val.Validator) and validator.is_optional:
-                return errors
-            # SHUT DOWN EVERYTHING
-            errors.append("%s: Required field missing" % path)
-            return errors
-
-        return self._validate(validator, data_item, path, strict)
-
     def _validate(self, validator, data, path, strict):
         """
         Validate data with validator.
@@ -76,6 +56,26 @@ class Schema(object):
             errors += self._validate_subset(validator, data, path, strict)
 
         return errors
+
+    def _validate_item(self, validator, data, path, strict, key):
+        """
+        Fetch item from data at the position key and validate with validator.
+
+        Returns an array of errors.
+        """
+        errors = []
+        path = util.get_path(path, key)
+        try:  # Pull value out of data. Data can be a map or a list/sequence
+            data_item = data[key]
+        except (KeyError, IndexError):  # Oops, that field didn't exist.
+            # Optional? Who cares.
+            if isinstance(validator, val.Validator) and validator.is_optional:
+                return errors
+            # SHUT DOWN EVERYTHING
+            errors.append("%s: Required field missing" % path)
+            return errors
+
+        return self._validate(validator, data_item, path, strict)
 
     def _validate_static_map_list(self, validator, data, path, strict):
         if util.is_map(validator) and not util.is_map(data):
