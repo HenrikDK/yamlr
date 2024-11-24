@@ -10,7 +10,7 @@ class FatalValidationError(Exception):
 # validate schema
 def validate(c_sch, data, data_name, strict):
     c_sch['data'] = data
-    print(f'V - state: {c_sch.keys()} data: {data.keys()}')
+    print(f'V    - state: {c_sch.keys()} data: {data.keys()}')
     path = util.get_path()
     try:
         errors = _validate(c_sch, c_sch['schema'], data, path, strict)
@@ -20,7 +20,7 @@ def validate(c_sch, data, data_name, strict):
 
 # Validate data with validator, returns an array of errors.
 def _validate(c_sch, c_val, data, path, strict):
-    print(f"v - {c_val.get('name', 'root')} - {c_val.keys()} - {data.keys()}")
+    print(f"v    - {c_val.get('name', 'root')} - {c_val.keys()} - {data}")
     if (util.is_list(c_val) or util.is_map(c_val)) and '_type' not in c_val: # does not work, since we now use dicts for everything
         return _validate_static_map_list(c_sch, c_val, data, path, strict)
 
@@ -53,14 +53,13 @@ def _validate(c_sch, c_val, data, path, strict):
 
 # Fetch item from data at the position key and validate with validator. Returns an array of errors.
 def _validate_item(c_sch, c_val, data, path, strict, key):
-    print(f'vit - {key} - {c_val.keys()}')
+    print(f'vit  - {key} - {c_val.keys()}')
     errors = []
     path = util.get_path(path, key)
     try:  # Pull value out of data. Data can be a map or a list/sequence
         data_item = data[key]
     except (KeyError, IndexError):  # Oops, that field didn't exist.
         # Optional? Who cares.
-        print(f'vi-e: {key} - {c_val}')
         if c_val['name'] in val.default and c_val.is_optional:
             return errors
         # SHUT DOWN EVERYTHING
@@ -91,11 +90,11 @@ def _validate_static_map_list(c_sch, c_val, data, path, strict):
     for key, s_val in util.get_iter(c_val):
         errors += _validate_item(c_sch, s_val, data, path, strict, key)
     
-    print(repr(errors))
+    print(f'vsml - errors - {errors}')
     return errors
 
 def _validate_map_list(c_sch, c_val, data, path, strict):
-    print(f'vml - {c_val.keys()} - {data}')
+    print(f'vml  - {c_val.keys()} - {data}')
     errors = []
 
     if not c_val['children']:
@@ -116,14 +115,14 @@ def _validate_map_list(c_sch, c_val, data, path, strict):
     return errors
 
 def _validate_include(c_sch, c_val, data, path, strict):
-    print(f'vinc - {c_val.keys()} - {data}')
-    include_schema = c_sch['includes'].get(c_val.include_name)
+    print(f'vinc - {c_val} - {data}')
+    include_name = c_val['args'][0]
+    include_schema = c_sch['includes'].get(include_name)
     print(repr(include_schema))
     if not include_schema:
         raise FatalValidationError("Include '%s' has not been defined." % c_val.include_name)
     
-    strict = strict if c_val.strict is None else c_val.strict
-    return include_schema._validate(include_schema._schema, data, path, strict)
+    return _validate(c_sch, include_schema, data, path, strict)
 
 def _validate_any(c_sch, c_val, data, path, strict):
     print(f'vany - {c_val.keys()} - {data}')
@@ -135,8 +134,8 @@ def _validate_any(c_sch, c_val, data, path, strict):
 
     validators = _get_include_validators_for_key(c_sch, c_val, data)
     sub_errors = []
-    for v in validators:
-        err = _validate(v, data, path, strict)
+    for s_val in validators:
+        err = _validate(c_sch, s_val, data, path, strict)
         if err:
             sub_errors.append(err)
 
@@ -177,7 +176,7 @@ def _validate_subset(c_sch, c_val, data, path, strict):
     return errors
 
 def _get_include_validators_for_key(c_sch, c_val, internal_data):
-    print(f'vfk: - {c_val}')
+    print(f'vfk  - {c_val}')
     key = c_val['kw_args'].get('key', None)
 
     if not key or key not in internal_data: 
@@ -202,7 +201,7 @@ def _get_include_validators_for_key(c_sch, c_val, internal_data):
     return result
 
 def _validate_primitive(c_sch, c_val, data, path):
-    print(f'vp - {c_sch.keys()} - {c_val} - {data}')
+    print(f'vp   - {c_val} - {data}')
     errors = val.validate(c_sch, c_val, data)
 
     for i, error in enumerate(errors):
