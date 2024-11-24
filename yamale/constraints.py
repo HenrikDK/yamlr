@@ -1,10 +1,6 @@
 import re
-import datetime
 import ipaddress
-
-from yamale.util import to_unicode
-from .base import Validator
-from .. import util
+from yamale import util
 
 def validate_min(value, constraint, kwargs):
     errors = []
@@ -149,7 +145,7 @@ def validate_ip_version(value, constraint, kwargs):
     
     valid = True
     try:
-        ip = ipaddress.ip_interface(to_unicode(value))
+        ip = ipaddress.ip_interface(util.to_unicode(value))
         valid = version == ip.version
     except ValueError:
         valid = False
@@ -191,7 +187,7 @@ constraints = {
     'key': {'fail': "Key error - %s", 'func': validte_key}
 }
 
-
+"""
 class Constraint(object):
     keywords = {}  # Keywords and types accepted by this constraint
     is_active = False
@@ -445,3 +441,4 @@ class Key(Constraint):
             error_list.extend(self.key.validate(k))
         return [self.fail % (e) for e in error_list]
 
+"""

@@ -1,8 +1,8 @@
 import re
 import ipaddress
 from datetime import date, datetime
-from . import constraints as con
-from .. import util
+from yamale import constraints as con
+from yamale import util
 
 # ABCs for containers were moved to their own module
 try:
@@ -172,7 +172,7 @@ def validate_semver(current_value, all_values, args = None, kw_args = None):
     return errors
 
 
-validators = {
+default = {
     'str': {'func': validate_str, 'constraints': ['length_min', 'length_max', 'str_char_exclude', 'str_equals', 'str_starts_with', 'str_ends_with', 'str_matches'] },
     'num': {'func': validate_num, 'constraints': ['min', 'max'] },
     'int': {'func': validate_int, 'constraints': ['min', 'max'] },
