@@ -174,17 +174,17 @@ def validte_key(value, constraint, kwargs):
     return errors
 
 constraints = {
-    'min': {'fail': "%s is less than %s", 'func': validate_min},
-    'max': {'fail': "%s is greater than %s", 'func': validate_max},
-    'length_min': {'fail': "Length of %s is less than %s", 'func': validate_length_min},
-    'length_max': {'fail': "Length of %s is greater than %s", 'func': validate_length_max},
-    'str_equals': {'fail': "%s does not equal %s", 'func': validate_str_equals},
-    'str_starts_with': {'fail': "%s does not start with %s", 'func': validate_str_starts_with},
-    'str_ends_with': {'fail': "%s does not end with %s", 'func': validate_str_ends_with},
-    'str_matches': {'fail': "%s does not match regex '%s'", 'func': validate_str_matches},
-    'str_char_exclude': {'fail': "'%s' contains excluded character '%s'", 'func': validate_character_exclude},
-    'ip_version': {'fail': "IP version of %s is not %s", 'func': validate_ip_version},
-    'key': {'fail': "Key error - %s", 'func': validte_key}
+    'min': {'fail': "%s is less than %s", 'func': validate_min, '_type': 'constraint'},
+    'max': {'fail': "%s is greater than %s", 'func': validate_max, '_type': 'constraint'},
+    'length_min': {'fail': "Length of %s is less than %s", 'func': validate_length_min, '_type': 'constraint'},
+    'length_max': {'fail': "Length of %s is greater than %s", 'func': validate_length_max, '_type': 'constraint'},
+    'str_equals': {'fail': "%s does not equal %s", 'func': validate_str_equals, '_type': 'constraint'},
+    'str_starts_with': {'fail': "%s does not start with %s", 'func': validate_str_starts_with, '_type': 'constraint'},
+    'str_ends_with': {'fail': "%s does not end with %s", 'func': validate_str_ends_with, '_type': 'constraint'},
+    'str_matches': {'fail': "%s does not match regex '%s'", 'func': validate_str_matches, '_type': 'constraint'},
+    'str_char_exclude': {'fail': "'%s' contains excluded character '%s'", 'func': validate_character_exclude, '_type': 'constraint'},
+    'ip_version': {'fail': "IP version of %s is not %s", 'func': validate_ip_version, '_type': 'constraint'},
+    'key': {'fail': "Key error - %s", 'func': validte_key, '_type': 'constraint'}
 }
 
 """

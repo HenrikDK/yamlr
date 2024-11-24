@@ -173,23 +173,23 @@ def validate_semver(current_value, all_values, args = None, kw_args = None):
 
 
 default = {
-    'str': {'func': validate_str, 'constraints': ['length_min', 'length_max', 'str_char_exclude', 'str_equals', 'str_starts_with', 'str_ends_with', 'str_matches'] },
-    'num': {'func': validate_num, 'constraints': ['min', 'max'] },
-    'int': {'func': validate_int, 'constraints': ['min', 'max'] },
-    'bool': {'func': validate_bool, 'constraints': [] },
-    'enum': {'func': validate_bool, 'constraints': [] },
-    'day': {'func': validate_day, 'constraints': ['min', 'max']},
-    'timestamp': {'func': validate_timestamp, 'constraints':['min', 'max']},
-    'map': {'func': validate_map, 'constraints': ['length_min', 'length_max', 'key']},
-    'list': {'func': validate_list, 'constraints': ['length_min', 'length_max']},
-    'include': {'func': validate_include, 'constraints': []},
-    'any': {'func': validate_any, 'constraints': []},
-    'subset': {'func': validate_subset, 'constraints': []},
-    'null': {'func': validate_null, 'constraints': []},
-    'regex': {'func': validate_regex, 'constraints': []},
-    'ip': {'func': validate_ip, 'constraints': ['ip_version']},
-    'mac': {'func': validate_mac, 'constraints': []},
-    'semver': {'func': validate_semver, 'constraints': []}
+    'str': {'func': validate_str, 'constraints': ['length_min', 'length_max', 'str_char_exclude', 'str_equals', 'str_starts_with', 'str_ends_with', 'str_matches'], '_type': 'validator'},
+    'num': {'func': validate_num, 'constraints': ['min', 'max'], '_type': 'validator'},
+    'int': {'func': validate_int, 'constraints': ['min', 'max'], '_type': 'validator'},
+    'bool': {'func': validate_bool, 'constraints': [], '_type': 'validator'},
+    'enum': {'func': validate_bool, 'constraints': [], '_type': 'validator'},
+    'day': {'func': validate_day, 'constraints': ['min', 'max'], '_type': 'validator'},
+    'timestamp': {'func': validate_timestamp, 'constraints':['min', 'max'], '_type': 'validator'},
+    'map': {'func': validate_map, 'constraints': ['length_min', 'length_max', 'key'], '_type': 'validator'},
+    'list': {'func': validate_list, 'constraints': ['length_min', 'length_max'], '_type': 'validator'},
+    'include': {'func': validate_include, 'constraints': [], '_type': 'validator'},
+    'any': {'func': validate_any, 'constraints': [], '_type': 'validator'},
+    'subset': {'func': validate_subset, 'constraints': [], '_type': 'validator'},
+    'null': {'func': validate_null, 'constraints': [], '_type': 'validator'},
+    'regex': {'func': validate_regex, 'constraints': [], '_type': 'validator'},
+    'ip': {'func': validate_ip, 'constraints': ['ip_version'], '_type': 'validator'},
+    'mac': {'func': validate_mac, 'constraints': [], '_type': 'validator'},
+    'semver': {'func': validate_semver, 'constraints': [], '_type': 'validator'}
 }
 
 def validate(validator, value, all_values, args, kw_args):
