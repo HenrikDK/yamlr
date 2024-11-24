@@ -1,7 +1,7 @@
 import re
 import os
 from tests.yamale_testcase import YamaleTestCase
-from yamale.validators import DefaultValidators, Validator
+#from yamale.wak_validators import DefaultValidators, Validator
 
 
 data_folder = os.path.dirname(os.path.realpath(__file__))
