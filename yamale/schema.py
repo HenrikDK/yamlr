@@ -53,14 +53,18 @@ def _validate(c_sch, c_val, data, path, strict):
 
 # Fetch item from data at the position key and validate with validator. Returns an array of errors.
 def _validate_item(c_sch, c_val, data, path, strict, key):
-    print(f'vit  - {key} - {c_val.keys()}')
+    print(f'vit  - {key} - {c_val}')
     errors = []
     path = util.get_path(path, key)
     try:  # Pull value out of data. Data can be a map or a list/sequence
         data_item = data[key]
     except (KeyError, IndexError):  # Oops, that field didn't exist.
         # Optional? Who cares.
-        if c_val['name'] in val.default and c_val.is_optional:
+        required = True 
+        if 'kw_args' in c_val:
+            required = c_val['kw_args'].get('required', True)
+        
+        if 'name' in c_val and c_val['name'] in val.default and not required:
             return errors
         # SHUT DOWN EVERYTHING
         errors.append("%s: Required field missing" % path)
