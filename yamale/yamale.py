@@ -9,7 +9,7 @@ class YamaleError(ValueError):
 
 def make_schema(path=None, validators=None, content=None):
     # validators = None means use default.
-    raw_schema = readers.parse_yaml(path, content=content)
+    raw_schema = readers.parse_yaml(path, content=content, type='schema')
     if not raw_schema:
         raise ValueError("{} is an empty file!".format(path))
 
@@ -25,7 +25,7 @@ def make_schema(path=None, validators=None, content=None):
 
 
 def make_data(path=None, content=None):
-    raw_data = readers.parse_yaml(path, content)
+    raw_data = readers.parse_yaml(path, content, type='data')
     if len(raw_data) == 0:
         return [({}, path)]
     return [(d, path) for d in raw_data]
