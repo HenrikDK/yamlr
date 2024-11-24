@@ -5,163 +5,208 @@ from yamale import validators as val
 def test_str_length_min():
     kw_args = {'min': 2}
     c_val = {'name': 'str', 'kw_args': kw_args, 'args': []}
-    c_sch = {
-        'validators': val.default,
-        'data': {}
-    }
-    val.validate(c_sch, c_val, "abcd")
+    c_sch = {'validators': val.default, 'data': {}}
 
     assert len(val.validate(c_sch, c_val, "abcd")) == 0
     assert len(val.validate(c_sch, c_val, "ab")) == 0
     assert len(val.validate(c_sch, c_val, "a")) == 1
 
-"""
-def test_length_max():
-    v = val.String(max=3)
-    assert v.is_valid("abc")
-    assert v.is_valid("ab")
-    assert not v.is_valid("abcd")
+def test_str_length_max():
+    kw_args = {'max': 3}
+    c_val = {'name': 'str', 'kw_args': kw_args, 'args': []}
+    c_sch = {'validators': val.default, 'data': {}}
 
+    assert len(val.validate(c_sch, c_val, "abc")) == 0
+    assert len(val.validate(c_sch, c_val, "ab")) == 0
+    assert len(val.validate(c_sch, c_val, "abcd")) == 1
 
-def test_number_max():
-    v = val.Number(min=0.5)
-    assert v.is_valid(4)
-    assert v.is_valid(0.5)
-    assert not v.is_valid(0.1)
+def test_num_min():
+    kw_args = {'min': 0.5}
+    c_val = {'name': 'num', 'kw_args': kw_args, 'args': []}
+    c_sch = {'validators': val.default, 'data': {}}
 
+    assert len(val.validate(c_sch, c_val, 4)) == 0
+    assert len(val.validate(c_sch, c_val, 0.5)) == 0
+    assert len(val.validate(c_sch, c_val, 0.1)) == 1
 
-def test_number_min():
-    v = val.Integer(max=10)
-    assert v.is_valid(4)
-    assert v.is_valid(10)
-    assert not v.is_valid(11)
+def test_num_max():
+    kw_args = {'max': 10}
+    c_val = {'name': 'num', 'kw_args': kw_args, 'args': []}
+    c_sch = {'validators': val.default, 'data': {}}
 
+    assert len(val.validate(c_sch, c_val, 4)) == 0
+    assert len(val.validate(c_sch, c_val, 10)) == 0
+    assert len(val.validate(c_sch, c_val, 11)) == 1
 
 def test_timestamp_min():
-    v = val.Timestamp(min=datetime.datetime(2010, 1, 1))
-    assert v.is_valid(datetime.datetime(2010, 1, 1))
-    assert v.is_valid(datetime.datetime(2011, 2, 2))
-    assert not v.is_valid(datetime.datetime(2009, 12, 31))
+    kw_args = {'min': datetime.datetime(2010, 1, 1)}
+    c_val = {'name': 'timestamp', 'kw_args': kw_args, 'args': []}
+    c_sch = {'validators': val.default, 'data': {}}
 
+    assert len(val.validate(c_sch, c_val, datetime.datetime(2010, 1, 1))) == 0
+    assert len(val.validate(c_sch, c_val, datetime.datetime(2010, 2, 2))) == 0
+    assert len(val.validate(c_sch, c_val, datetime.datetime(2009, 12, 31))) == 1
 
 def test_timestamp_max():
-    v = val.Timestamp(max=datetime.datetime(2010, 1, 1))
-    assert v.is_valid(datetime.datetime(2010, 1, 1))
-    assert v.is_valid(datetime.datetime(2009, 2, 2))
-    assert not v.is_valid(datetime.datetime(2010, 2, 2))
+    kw_args = {'max': datetime.datetime(2010, 1, 1)}
+    c_val = {'name': 'timestamp', 'kw_args': kw_args, 'args': []}
+    c_sch = {'validators': val.default, 'data': {}}
 
+    assert len(val.validate(c_sch, c_val, datetime.datetime(2010, 1, 1))) == 0
+    assert len(val.validate(c_sch, c_val, datetime.datetime(2009, 2, 2))) == 0
+    assert len(val.validate(c_sch, c_val, datetime.datetime(2010, 2, 2))) == 1
 
 def test_day_min():
-    v = val.Day(min=datetime.date(2010, 1, 1))
-    assert v.is_valid(datetime.date(2010, 1, 1))
-    assert v.is_valid(datetime.date(2011, 2, 2))
-    assert not v.is_valid(datetime.date(2009, 12, 31))
+    kw_args = {'min': datetime.date(2010, 1, 1)}
+    c_val = {'name': 'day', 'kw_args': kw_args, 'args': []}
+    c_sch = {'validators': val.default, 'data': {}}
 
+    assert len(val.validate(c_sch, c_val, datetime.date(2010, 1, 1))) == 0
+    assert len(val.validate(c_sch, c_val, datetime.date(2011, 2, 2))) == 0
+    assert len(val.validate(c_sch, c_val, datetime.date(2009, 12, 31))) == 1
 
 def test_day_max():
-    v = val.Day(max=datetime.date(2010, 1, 1))
-    assert v.is_valid(datetime.date(2010, 1, 1))
-    assert v.is_valid(datetime.date(2009, 2, 2))
-    assert not v.is_valid(datetime.date(2010, 2, 2))
+    kw_args = {'max': datetime.date(2010, 1, 1)}
+    c_val = {'name': 'day', 'kw_args': kw_args, 'args': []}
+    c_sch = {'validators': val.default, 'data': {}}
 
+    assert len(val.validate(c_sch, c_val, datetime.date(2010, 1, 1))) == 0
+    assert len(val.validate(c_sch, c_val, datetime.date(2009, 2, 2))) == 0
+    assert len(val.validate(c_sch, c_val, datetime.date(2010, 2, 2))) == 1
 
 def test_str_equals():
-    v = val.String(equals="abcd")
-    assert v.is_valid("abcd")
-    assert not v.is_valid("abcde")
-    assert not v.is_valid("c")
+    kw_args = {'equals': 'abcd'}
+    c_val = {'name': 'str', 'kw_args': kw_args, 'args': []}
+    c_sch = {'validators': val.default, 'data': {}}
 
+    assert len(val.validate(c_sch, c_val, "abcd")) == 0
+    assert len(val.validate(c_sch, c_val, "abcde")) == 1
+    assert len(val.validate(c_sch, c_val, "c")) == 1
 
 def test_str_equals_ignore_case():
-    v = val.String(equals="abcd", ignore_case=True)
-    assert v.is_valid("abCd")
-    assert not v.is_valid("abcde")
-    assert not v.is_valid("C")
+    kw_args = {'equals': 'abcd', 'ignore_case': True}
+    c_val = {'name': 'str', 'kw_args': kw_args, 'args': []}
+    c_sch = {'validators': val.default, 'data': {}}
 
+    assert len(val.validate(c_sch, c_val, "abCd")) == 0
+    assert len(val.validate(c_sch, c_val, "abcde")) == 1
+    assert len(val.validate(c_sch, c_val, "C")) == 1
 
 def test_str_starts_with():
-    v = val.String(starts_with="abc")
-    assert v.is_valid("abcd")
-    assert not v.is_valid("bcd")
-    assert not v.is_valid("c")
+    kw_args = {'starts_with': 'abc'}
+    c_val = {'name': 'str', 'kw_args': kw_args, 'args': []}
+    c_sch = {'validators': val.default, 'data': {}}
 
+    assert len(val.validate(c_sch, c_val, "abcd")) == 0
+    assert len(val.validate(c_sch, c_val, "bcd")) == 1
+    assert len(val.validate(c_sch, c_val, "c")) == 1
 
 def test_str_starts_with_ignore_case():
-    v = val.String(starts_with="abC", ignore_case=True)
-    assert v.is_valid("abCde")
-    assert v.is_valid("abcde")
-    assert not v.is_valid("bcd")
-    assert not v.is_valid("C")
+    kw_args = {'starts_with': 'abC', 'ignore_case': True}
+    c_val = {'name': 'str', 'kw_args': kw_args, 'args': []}
+    c_sch = {'validators': val.default, 'data': {}}
 
+    assert len(val.validate(c_sch, c_val, "abCde")) == 0
+    assert len(val.validate(c_sch, c_val, "abcde")) == 0
+    assert len(val.validate(c_sch, c_val, "bcd")) == 1
+    assert len(val.validate(c_sch, c_val, "C")) == 1
 
 def test_str_ends_with():
-    v = val.String(ends_with="abcd")
-    assert v.is_valid("abcd")
-    assert not v.is_valid("abcde")
-    assert not v.is_valid("c")
+    kw_args = {'ends_with': 'abcd'}
+    c_val = {'name': 'str', 'kw_args': kw_args, 'args': []}
+    c_sch = {'validators': val.default, 'data': {}}
 
+    assert len(val.validate(c_sch, c_val, "abcd")) == 0
+    assert len(val.validate(c_sch, c_val, "abcde")) == 1
+    assert len(val.validate(c_sch, c_val, "c")) == 1
 
 def test_str_ends_with_ignore_case():
-    v = val.String(ends_with="abC", ignore_case=True)
-    assert v.is_valid("xyzabC")
-    assert v.is_valid("xyzabc")
-    assert not v.is_valid("cde")
-    assert not v.is_valid("C")
+    kw_args = {'ends_with': 'abC', 'ignore_case': True}
+    c_val = {'name': 'str', 'kw_args': kw_args, 'args': []}
+    c_sch = {'validators': val.default, 'data': {}}
 
+    assert len(val.validate(c_sch, c_val, "xyzabC")) == 0
+    assert len(val.validate(c_sch, c_val, "xyzabc")) == 0
+    assert len(val.validate(c_sch, c_val, "cde")) == 1
+    assert len(val.validate(c_sch, c_val, "C")) == 1
 
 def test_str_matches():
-    v = val.String(matches=r"^(abc)\1?de$")
-    assert v.is_valid("abcabcde")
-    assert not v.is_valid("abcabcabcde")
-    assert not v.is_valid("\12")
+    kw_args = {'matches': r"^(abc)\1?de$"}
+    c_val = {'name': 'str', 'kw_args': kw_args, 'args': []}
+    c_sch = {'validators': val.default, 'data': {}}
 
-    v = val.String(matches=r"[a-z0-9]{3,}s\s$", ignore_case=True)
-    assert v.is_valid("b33S\v")
-    assert v.is_valid("B33s\t")
-    assert not v.is_valid(" b33s ")
-    assert not v.is_valid("b33s  ")
+    assert len(val.validate(c_sch, c_val, "abcabcde")) == 0
+    assert len(val.validate(c_sch, c_val, "abcabcabcde")) == 1
+    assert len(val.validate(c_sch, c_val, "\12")) == 1
 
-    v = val.String(matches=r"A.+\d$", ignore_case=False, multiline=True)
-    assert v.is_valid("A_-3\n\n")
-    assert not v.is_valid("a!!!!!5\n\n")
+def test_str_matches_ignore_case():
+    kw_args = {'matches': r"[a-z0-9]{3,}s\s$", 'ignore_case': True}
+    c_val = {'name': 'str', 'kw_args': kw_args, 'args': []}
+    c_sch = {'validators': val.default, 'data': {}}
 
-    v = val.String(matches=r".*^Ye.*s\.", ignore_case=True, multiline=True, dotall=True)
-    assert v.is_valid("YEeeEEEEeeeeS.")
-    assert v.is_valid("What?\nYes!\nBEES.\nOK.")
-    assert not v.is_valid("YES-TA-TOES?")
-    assert not v.is_valid("\n\nYaes.")
+    assert len(val.validate(c_sch, c_val, "b33S\v")) == 0
+    assert len(val.validate(c_sch, c_val, "B33s\t")) == 0
+    assert len(val.validate(c_sch, c_val, " b33s ")) == 1
+    assert len(val.validate(c_sch, c_val, "b33s  ")) == 1
 
+def test_str_matches_multiline():
+    kw_args = {'matches': r"A.+\d$", 'ignore_case': False, 'multiline': True}
+    c_val = {'name': 'str', 'kw_args': kw_args, 'args': []}
+    c_sch = {'validators': val.default, 'data': {}}
 
-def test_char_exclude():
-    v = val.String(exclude="abcd")
-    assert v.is_valid("efg")
-    assert not v.is_valid("abc")
-    assert not v.is_valid("c")
+    assert len(val.validate(c_sch, c_val, "A_-3\n\n")) == 0
+    assert len(val.validate(c_sch, c_val, "a!!!!!5\n\n")) == 1
 
+def test_str_matches_all_options():
+    kw_args = {'matches': r".*^Ye.*s\.", 'ignore_case': True, 'multiline': True, 'dotall': True}
+    c_val = {'name': 'str', 'kw_args': kw_args, 'args': []}
+    c_sch = {'validators': val.default, 'data': {}}
+
+    assert len(val.validate(c_sch, c_val, "YEeeEEEEeeeeS.")) == 0
+    assert len(val.validate(c_sch, c_val, "What?\nYes!\nBEES.\nOK.")) == 0
+    assert len(val.validate(c_sch, c_val, "YES-TA-TOES?")) == 1
+    assert len(val.validate(c_sch, c_val, "\n\nYaes.")) == 1
+
+def test_str_exclude():
+    kw_args = {'exclude': 'abcd'}
+    c_val = {'name': 'str', 'kw_args': kw_args, 'args': []}
+    c_sch = {'validators': val.default, 'data': {}}
+
+    assert len(val.validate(c_sch, c_val, "efg")) == 0
+    assert len(val.validate(c_sch, c_val, "abc")) == 1
+    assert len(val.validate(c_sch, c_val, "c")) == 1
 
 def test_char_exclude_igonre_case():
-    v = val.String(exclude="abcd", ignore_case=True)
-    assert v.is_valid("efg")
-    assert v.is_valid("Efg")
-    assert not v.is_valid("abc")
-    assert not v.is_valid("Def")
-    assert not v.is_valid("c")
+    kw_args = {'exclude': 'abcd', 'ignore_case': True}
+    c_val = {'name': 'str', 'kw_args': kw_args, 'args': []}
+    c_sch = {'validators': val.default, 'data': {}}
 
+    assert len(val.validate(c_sch, c_val, "efg")) == 0
+    assert len(val.validate(c_sch, c_val, "Efg")) == 0
+    assert len(val.validate(c_sch, c_val, "abc")) == 1
+    assert len(val.validate(c_sch, c_val, "Def")) == 1
+    assert len(val.validate(c_sch, c_val, "c")) == 1
 
 def test_ip4():
-    v = val.Ip(version=4)
-    assert v.is_valid("192.168.1.1")
-    assert v.is_valid("192.168.1.255")
-    assert v.is_valid("192.168.3.1/24")
-    assert not v.is_valid("2001:db8::")
-    assert not v.is_valid("2001:db8::/64")
+    kw_args = {'version': 4}
+    c_val = {'name': 'ip', 'kw_args': kw_args, 'args': []}
+    c_sch = {'validators': val.default, 'data': {}}
 
+    assert len(val.validate(c_sch, c_val, "192.168.1.1")) == 0
+    assert len(val.validate(c_sch, c_val, "192.168.1.255")) == 0
+    assert len(val.validate(c_sch, c_val, "192.168.3.1/24")) == 0
+
+    assert len(val.validate(c_sch, c_val, "2001:db8::")) == 1
+    assert len(val.validate(c_sch, c_val, "2001:db8::/64")) == 1
 
 def test_ip6():
-    v = val.Ip(version=6)
-    assert not v.is_valid("192.168.1.1")
-    assert not v.is_valid("192.168.1.255")
-    assert not v.is_valid("192.168.3.1/24")
-    assert v.is_valid("2001:db8::")
-    assert v.is_valid("2001:db8::/64")
-"""
+    kw_args = {'version': 6}
+    c_val = {'name': 'ip', 'kw_args': kw_args, 'args': []}
+    c_sch = {'validators': val.default, 'data': {}}
+
+    assert len(val.validate(c_sch, c_val, "192.168.1.1")) == 1
+    assert len(val.validate(c_sch, c_val, "192.168.1.255")) == 1
+    assert len(val.validate(c_sch, c_val, "192.168.3.1/24")) == 1
+               
+    assert len(val.validate(c_sch, c_val, "2001:db8::")) == 0
+    assert len(val.validate(c_sch, c_val, "2001:db8::/64")) == 0
