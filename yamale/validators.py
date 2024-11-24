@@ -173,7 +173,7 @@ def validate_semver(current_value, all_values, args = None, kw_args = None):
 
 
 default = {
-    'str': {'func': validate_str, 'constraints': ['length_min', 'length_max', 'str_char_exclude', 'str_equals', 'str_starts_with', 'str_ends_with', 'str_matches'], '_type': 'validator'},
+    'str': {'func': validate_str, 'constraints': ['length_min', 'length_max', 'str_exclude', 'str_equals', 'str_starts_with', 'str_ends_with', 'str_matches'], '_type': 'validator'},
     'num': {'func': validate_num, 'constraints': ['min', 'max'], '_type': 'validator'},
     'int': {'func': validate_int, 'constraints': ['min', 'max'], '_type': 'validator'},
     'bool': {'func': validate_bool, 'constraints': [], '_type': 'validator'},
@@ -211,6 +211,14 @@ def validate(c_sch, c_val, value):
 
     # Then validate all the constraints second.
     for c_name in validator['constraints']:
+        c_key = c_name
+        index = c_name.find('_')
+        if index > 0:
+            c_key = c_name[index + 1:]
+        
+        if c_key not in kw_args:
+            continue
+
         constraint = con.constraints[c_name]
 
         error = constraint['func'](value, constraint, kw_args)
