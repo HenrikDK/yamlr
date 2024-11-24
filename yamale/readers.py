@@ -1,7 +1,7 @@
 import yaml, json
 from io import StringIO
 from yamale import util, parser
-from yamale import wak_validators as val
+from yamale import validators as val
 
 """
 Read yaml file using pyaml.
