@@ -195,10 +195,10 @@ default = {
 def validate(c_sch, c_val, value):
     validator_name = c_val['name']
     validator = c_sch['validators'][validator_name]
+    all_values = c_sch['data']
 
     args = c_val['args']
     kw_args = c_val['kw_args']
-    all_values = c_sch['data']
     print(f'vv - {validator_name} - {args}')
     print(f'vv - {validator}')
     errors = []
