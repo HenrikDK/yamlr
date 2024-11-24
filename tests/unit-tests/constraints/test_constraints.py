@@ -1,5 +1,5 @@
 import datetime
-from yamale.validators import constraints as con
+from yamale import constraints as con
 
 def test_length_min():
     constraint = con.constraints['length_min']

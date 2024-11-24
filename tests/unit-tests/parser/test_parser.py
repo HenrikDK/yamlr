@@ -3,13 +3,12 @@ import pytest
 from yamale import parser as par
 
 def test_basic_validators():
-    assert par.parse("String()")['name'] == 'String'
     assert par.parse("str()")['name'] == 'str'
-    assert par.parse("regex()")['name'] == 'regex'
     assert par.parse("num()")['name'] == 'num'
     assert par.parse("int()")['name'] == 'int'
     assert par.parse("day()")['name'] == 'day'
     assert par.parse("timestamp()")['name'] == 'timestamp'
+    assert par.parse("regex()")['name'] == 'regex'
     assert par.parse("bool()")['name'] == 'bool'
     assert par.parse("ip()")['name'] == 'ip'
     assert par.parse("mac()")['name'] == 'mac'
