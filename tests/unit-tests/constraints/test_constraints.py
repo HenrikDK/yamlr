@@ -167,7 +167,7 @@ def test_str_matches_ignore_case_multi_dotall():
     assert len(func("\n\nYaes.", constraint, args)) == 1
 
 def test_char_exclude():
-    constraint = con.constraints['str_char_exclude']
+    constraint = con.constraints['str_exclude']
     func = constraint['func']
     args = {'exclude': "abcd"}
 
@@ -176,7 +176,7 @@ def test_char_exclude():
     assert len(func("c", constraint, args)) == 1
 
 def test_char_exclude_igonre_case():
-    constraint = con.constraints['str_char_exclude']
+    constraint = con.constraints['str_exclude']
     func = constraint['func']
     args = {'exclude': "abcd", 'ignore_case': True}
 
