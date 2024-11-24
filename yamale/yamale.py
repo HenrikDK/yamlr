@@ -1,5 +1,4 @@
 from yamale import schema, readers
-import traceback
 
 class YamaleError(ValueError):
     def __init__(self, results):
@@ -18,7 +17,6 @@ def make_schema(path=None, validators=None, content=None):
     try:
         s = readers.process_schema(raw_schema, path, validators=validators)
     except (TypeError, SyntaxError) as e:
-        print(traceback.format_exc())
         error = "Schema error in file %s\n" % path
         error += str(e)
         raise SyntaxError(error)
@@ -27,19 +25,17 @@ def make_schema(path=None, validators=None, content=None):
 
 
 def make_data(path=None, content=None):
-    from . import readers
-
     raw_data = readers.parse_yaml(path, content)
     if len(raw_data) == 0:
         return [({}, path)]
     return [(d, path) for d in raw_data]
 
 
-def validate(schema, data, strict=True, _raise_error=True):
+def validate(validator, data, strict=True, _raise_error=True):
     results = []
     is_valid = True
     for d, path in data:
-        result = schema.validate(d, path, strict)
+        result = schema.validate(validator, d, path, strict)
         results.append(result)
         is_valid = is_valid and result.isValid()
     if _raise_error and not is_valid:
