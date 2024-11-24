@@ -199,8 +199,6 @@ def validate(c_sch, c_val, value):
 
     args = c_val['args']
     kw_args = c_val['kw_args']
-    print(f'vv - {validator_name} - {args}')
-    print(f'vv - {validator}')
     errors = []
 
     # Make sure the type validates first.
