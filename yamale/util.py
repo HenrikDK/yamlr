@@ -1,6 +1,9 @@
 from collections.abc import Mapping, Sequence
 
 def get_path(path = '', key=''):
+    if isinstance(key, int):
+        return f'{path}.[{key}]'
+
     if len(key) == 0:
         return path
     
