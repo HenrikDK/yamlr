@@ -2,26 +2,33 @@ import yaml, json
 from io import StringIO
 from yamale import util, parser
 from yamale import validators as val
+from yaml.loader import SafeLoader
+
+class SafeLineLoader(SafeLoader):
+    def construct_mapping(self, node, deep=False):
+        mapping = super(SafeLineLoader, self).construct_mapping(node, deep=deep)
+        # Add 1 so line numbering starts at 1
+        mapping['__line__'] = node.start_mark.line + 1
+        return mapping
 
 """
 Read yaml file using pyaml.
 """
-def _parse_yaml(f):
-    try:
-        Loader = yaml.CSafeLoader
-    except AttributeError:  # System does not have libyaml
-        Loader = yaml.SafeLoader
-    return list(yaml.load_all(f, Loader=Loader))
+def _parse_yaml(f, type):
+    if type == 'schema':
+        return list(yaml.load_all(f, Loader=SafeLoader))
+    
+    return list(yaml.load_all(f, Loader=SafeLineLoader))
 
-def parse_yaml(path=None, content=None):
+def parse_yaml(path=None, content=None, type='schema'):
     if (path is None and content is None) or (path is not None and content is not None):
         raise TypeError("Pass either path= or content=, not both")
 
     if path is not None:
         with open(path) as f:
-            return _parse_yaml(f)
+            return _parse_yaml(f, type)
     else:
-        return _parse_yaml(StringIO(content))
+        return _parse_yaml(StringIO(content), type)
 
 """
 Go through a schema and map validators.
