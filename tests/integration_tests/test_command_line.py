@@ -1,12 +1,9 @@
 import os
 import contextlib
-
 import pytest
 
 from yamale import __main__ as command_line
 from yamale import YamaleError
-
-dir_path = os.path.dirname(os.path.realpath(__file__))
 
 parsers = ["pyyaml", "PyYAML"]
 
