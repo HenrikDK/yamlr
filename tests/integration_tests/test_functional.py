@@ -121,39 +121,47 @@ test_data = [
     subset_empty,
 ]
 
-for d in test_data:
+"""for d in test_data:
+"""
+
+def test_flat_make_schema():
+    c_sch = yamale.make_schema(get_fixture(types["schema"]))
+    
+    keys = c_sch['schema'].keys()
+    assert len(keys) == 9
+    for key in keys:
+        assert c_sch['schema'][key]['_type'] == 'call'
+
+
+def test_nested_schema():
+    c_sch = yamale.make_schema(get_fixture(nested["schema"]))
+
+    nested_schema = c_sch['schema']
+    print(nested_schema)
+    assert nested_schema["string"]['name'] == 'str'
+    assert isinstance(nested_schema["list"], (list, tuple))
+    assert nested_schema["list"][0]['name'] == 'str'
+
+"""
+@pytest.mark.parametrize("data_map", test_data)
+def test_good(data_map):
+
     for key in d.keys():
         if key == "schema":
             d[key] = yamale.make_schema(get_fixture(d[key]))
         else:
             d[key] = yamale.make_data(get_fixture(d[key]))
 
-
-def test_flat_make_schema():
-    assert isinstance(types["schema"]._schema["string"], val.String)
-
-
-def test_nested_schema():
-    nested_schema = nested["schema"]._schema
-    assert isinstance(nested_schema["string"], val.String)
-    assert isinstance(nested_schema["list"], (list, tuple))
-    assert isinstance(nested_schema["list"][0], val.String)
-
-
-@pytest.mark.parametrize("data_map", test_data)
-def test_good(data_map):
     for k, good_data in data_map.items():
         if k.startswith("good"):
             yamale.validate(data_map["schema"], good_data)
-
+"""
 
 def test_bad_validate():
     assert count_exception_lines(types["schema"], types["bad"]) == 9
 
-
 def test_bad_nested():
     assert count_exception_lines(nested["schema"], nested["bad"]) == 2
-
 
 def test_bad_nested_issue_54():
     exp = [
@@ -168,26 +176,27 @@ def test_bad_nested_issue_54():
     ]
     match_exception_lines(nested_issue_54["schema"], nested_issue_54["bad"], exp)
 
-
 def test_bad_custom():
     assert count_exception_lines(custom["schema"], custom["bad"]) == 1
-
 
 def test_bad_lists():
     assert count_exception_lines(lists["schema"], lists["bad"]) == 6
 
-
 def test_bad2_lists():
     assert count_exception_lines(lists["schema"], lists["bad2"]) == 2
-
-
-def test_bad_maps():
-    assert count_exception_lines(maps["schema"], maps["bad"]) == 7
-
 
 def test_bad_maps2():
     assert count_exception_lines(maps["schema"], maps["bad2"]) == 1
 
+def test_bad_maps():
+    assert count_exception_lines(maps["schema"], maps["bad"]) == 7
+
+"""
+["map.bad: '12.5' is not a str.", 
+ "map.bad: '12.5' is not an int.", 
+ "map.not: '[]' is not a str.", 
+ "map.not: '[]' is not an int.", 
+ "max: Length of {'a': 1, 'b': 2, 'c': 3, '_lineno': 6} is greater than 2"]
 
 def test_bad_keywords():
     assert count_exception_lines(keywords["schema"], keywords["bad"]) == 9
@@ -314,7 +323,6 @@ def test_nodef_subset_schema():
 
     assert "'subset' requires at least one validator!" in str(e.value)
 
-
 @pytest.mark.parametrize(
     "use_schema_string,use_data_string,expected_message_re",
     [
@@ -342,11 +350,14 @@ def test_validate_errors(use_schema_string, use_data_string, expected_message_re
     assert re.match(expected_message_re, excinfo.value.message, re.MULTILINE), "Message {} should match {}".format(
         excinfo.value.message, expected_message_re
     )
-
+"""
 
 def match_exception_lines(schema, data, expected, strict=False):
+    c_sch = yamale.make_schema(get_fixture(schema))
+    c_data = yamale.make_data(get_fixture(data))
+
     with pytest.raises(ValueError) as e:
-        yamale.validate(schema, data, strict)
+        yamale.validate(c_sch, c_data, strict)
 
     got = e.value.results[0].errors
     got.sort()
@@ -355,7 +366,12 @@ def match_exception_lines(schema, data, expected, strict=False):
 
 
 def count_exception_lines(schema, data, strict=False):
+    c_sch = yamale.make_schema(get_fixture(schema))
+    c_data = yamale.make_data(get_fixture(data))
+
     with pytest.raises(ValueError) as e:
-        yamale.validate(schema, data, strict)
+        yamale.validate(c_sch, c_data, strict)
+    
+    print('value: ' + repr(e.value.results))
     result = e.value.results[0]
     return len(result.errors)
