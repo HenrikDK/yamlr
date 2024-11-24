@@ -30,7 +30,7 @@ def test_bad_yaml(parser):
             1,
             parser,
         )
-        print(repr(e))
+    
     assert "map.bad: '12.5' is not a str." in e.value.message
 
 
