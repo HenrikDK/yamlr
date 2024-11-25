@@ -1,4 +1,5 @@
 import re
+import json
 import ipaddress
 from yamale import util
 
@@ -23,9 +24,14 @@ def validate_max(value, constraint, kwargs):
 def validate_length_min(value, constraint, kwargs):
     errors = []
     min = int(kwargs['min'])
-    valid = min <= len(value)
+    c_value = value
+    if isinstance(value, dict):
+        c_value = json.loads(json.dumps(value))
+        c_value.pop('_lineno', None)
+
+    valid = min <= len(c_value)
     if not valid:
-        message = constraint['fail'] % (value, min)
+        message = constraint['fail'] % (c_value, min)
         errors.append(message)
     return errors
 
