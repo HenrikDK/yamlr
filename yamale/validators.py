@@ -195,11 +195,12 @@ def validate(c_sch, c_val, value):
     args = c_val['args']
     kw_args = c_val['kw_args']
     errors = []
-    print(f'vv   - {value} - na - {args} - {kw_args}')
+    c_sch['log'].append(f"{'vv':10} - {value} - {args} - {kw_args}")
 
     # Make sure the type validates first.
     errors = validator['func'](c_sch, value, args, kw_args)
-    print(f'vv   - {errors}')
+    c_sch['log'].append(f"{'vv - e':10} - {errors}")
+    
     if len(errors) > 0:
         # todo: return line number, and message
         return errors
