@@ -110,7 +110,6 @@ def validate_null(c_sch, value, args = None, kw_args = None):
     return errors
 
 def validate_regex(c_sch, value, args = None, kw_args = None):
-    valid = value is None
     regex_name = kw_args.get("name", 'regex match')
     regex_flags = {"ignore_case": re.I, "multiline": re.M, "dotall": re.S}
     flags = 0
