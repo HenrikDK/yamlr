@@ -1,7 +1,6 @@
 import re
 import ipaddress
 from datetime import date, datetime
-from yamale import constraints as con
 from yamale import util
 
 # ABCs for containers were moved to their own module
@@ -217,7 +216,7 @@ def validate(c_sch, c_val, value):
         if c_key not in kw_args:
             continue
 
-        constraint = con.constraints[c_name]
+        constraint = c_sch['constraints'][c_name]
 
         error = constraint['func'](value, constraint, kw_args)
         if len(error) > 0:
