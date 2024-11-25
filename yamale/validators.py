@@ -21,7 +21,7 @@ def validate_num(current_value, all_values, args = None, kw_args = None):
     valid = isinstance(current_value, (int, float)) and not isinstance(current_value, bool)
     errors = []
     if not valid:
-        error = "'%s' is not an int or float." % (current_value)
+        error = "'%s' is not a num." % (current_value)
         errors.append(error)
     return errors
 
@@ -72,9 +72,6 @@ def validate_map(current_value, all_values, args = None, kw_args = None):
         error = "'%s' is not a valid map." % (current_value)
         errors.append(error)
     return errors
-
-    #key = kw_args.get('key', None)    
-    #validators = [val for val in args if 'name' in val and isinstance(val, dict)]
 
 def validate_list(current_value, all_values, args = None, kw_args = None):
     valid = isinstance(current_value, Sequence) and not util.isstr(current_value)
