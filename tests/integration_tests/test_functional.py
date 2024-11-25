@@ -236,6 +236,10 @@ def test_bad_strict_map():
     exp = ["extra: Unexpected element"]
     match_exception_lines(strict_map["schema"], strict_map["bad"], exp, strict=True)
 
+def test_bad_mixed_strict_map():
+    exp = ["field3.extra: Unexpected element"]
+    match_exception_lines(mixed_strict_map["schema"], mixed_strict_map["bad"], exp)
+
 def test_bad_strict_list():
     exp = ["2: Unexpected element"]
     match_exception_lines(strict_list["schema"], strict_list["bad"], exp, strict=True)
@@ -248,15 +252,12 @@ def test_bad_static_list():
     exp = ["0: Required field missing"]
     match_exception_lines(static_list["schema"], static_list["bad"], exp)
 
-
-"""
-def test_bad_mixed_strict_map():
-    exp = ["field3.extra: Unexpected element"]
-    match_exception_lines(mixed_strict_map["schema"], mixed_strict_map["bad"], exp)
-
 def test_bad_map_key_constraint_base():
     exp = [": Key error - 'bad' is not a int."]
     match_exception_lines(map_key_constraint["schema"], map_key_constraint["bad_base"], exp)
+
+"""
+
 
 def test_bad_map_key_constraint_nest():
     exp = ["1.0: Key error - '100' is not a str."]
