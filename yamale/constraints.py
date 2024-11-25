@@ -153,9 +153,10 @@ def validate_character_exclude(c_sch, value, args, kwargs):
             failed_char.append(char)
             valid = False
 
-    if not valid:
-        message = "'%s' contains excluded character '%s'" % (value, failed_char)
-        errors.append(message)
+    if valid: return errors
+
+    message = "'%s' contains excluded character '%s'" % (value, ''.join(failed_char))
+    errors.append(message)
     
     return errors
 
