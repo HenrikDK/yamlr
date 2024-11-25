@@ -2,7 +2,7 @@ import datetime
 from yamale import constraints as con
 
 def test_length_min():
-    constraint = con.constraints['length_min']
+    constraint = con.default['length_min']
     func = constraint['func']
     args = {'min':2}
     
@@ -11,7 +11,7 @@ def test_length_min():
     assert len(func("a", constraint, args)) == 1
 
 def test_length_max():
-    constraint = con.constraints['length_max']
+    constraint = con.default['length_max']
     func = constraint['func']
     args = {'max':3}
 
@@ -20,7 +20,7 @@ def test_length_max():
     assert len(func("abcd", constraint, args)) == 1
 
 def test_number_max():
-    constraint = con.constraints['max']
+    constraint = con.default['max']
     func = constraint['func']
     args = {'max':10}
 
@@ -29,7 +29,7 @@ def test_number_max():
     assert len(func(11, constraint, args)) == 1
 
 def test_number_min():
-    constraint = con.constraints['min']
+    constraint = con.default['min']
     func = constraint['func']
     args = {'min':0.5}
 
@@ -38,7 +38,7 @@ def test_number_min():
     assert len(func(0.1, constraint, args)) == 1
 
 def test_timestamp_min():
-    constraint = con.constraints['min']
+    constraint = con.default['min']
     func = constraint['func']
     args = {'min':datetime.datetime(2010, 1, 1)}
 
@@ -47,7 +47,7 @@ def test_timestamp_min():
     assert len(func(datetime.datetime(2009, 12, 31), constraint, args)) == 1
 
 def test_timestamp_max():
-    constraint = con.constraints['max']
+    constraint = con.default['max']
     func = constraint['func']
     args = {'max':datetime.datetime(2010, 1, 1)}
 
@@ -56,7 +56,7 @@ def test_timestamp_max():
     assert len(func(datetime.datetime(2010, 2, 2), constraint, args)) == 1
 
 def test_day_min():
-    constraint = con.constraints['min']
+    constraint = con.default['min']
     func = constraint['func']
     args = {'min':datetime.date(2010, 1, 1)}
 
@@ -65,7 +65,7 @@ def test_day_min():
     assert len(func(datetime.date(2009, 12, 31), constraint, args)) == 1
 
 def test_day_max():
-    constraint = con.constraints['max']
+    constraint = con.default['max']
     func = constraint['func']
     args = {'max':datetime.date(2010, 1, 1)}
 
@@ -74,7 +74,7 @@ def test_day_max():
     assert len(func(datetime.date(2010, 2, 2), constraint, args)) == 1
 
 def test_str_equals():
-    constraint = con.constraints['str_equals']
+    constraint = con.default['str_equals']
     func = constraint['func']
     args = {'equals':"abcd"}
 
@@ -83,7 +83,7 @@ def test_str_equals():
     assert len(func("c", constraint, args)) == 1
 
 def test_str_equals_ignore_case():
-    constraint = con.constraints['str_equals']
+    constraint = con.default['str_equals']
     func = constraint['func']
     args = {'equals':"abcd", 'ignore_case': True}
 
@@ -92,7 +92,7 @@ def test_str_equals_ignore_case():
     assert len(func("C", constraint, args)) == 1
 
 def test_str_starts_with():
-    constraint = con.constraints['str_starts_with']
+    constraint = con.default['str_starts_with']
     func = constraint['func']
     args = {'starts_with':"abc"}
 
@@ -101,7 +101,7 @@ def test_str_starts_with():
     assert len(func("c", constraint, args)) == 1
 
 def test_str_starts_with_ignore_case():
-    constraint = con.constraints['str_starts_with']
+    constraint = con.default['str_starts_with']
     func = constraint['func']
     args = {'starts_with':"abC", 'ignore_case': True}
 
@@ -111,7 +111,7 @@ def test_str_starts_with_ignore_case():
     assert len(func("C", constraint, args)) == 1
 
 def test_str_ends_with():
-    constraint = con.constraints['str_ends_with']
+    constraint = con.default['str_ends_with']
     func = constraint['func']
     args = {'ends_with':"abcd"}
 
@@ -120,7 +120,7 @@ def test_str_ends_with():
     assert len(func("c", constraint, args)) == 1
 
 def test_str_ends_with_ignore_case():
-    constraint = con.constraints['str_ends_with']
+    constraint = con.default['str_ends_with']
     func = constraint['func']
     args = {'ends_with':"abC", 'ignore_case': True}
 
@@ -130,7 +130,7 @@ def test_str_ends_with_ignore_case():
     assert len(func("C", constraint, args)) == 1
 
 def test_str_matches():
-    constraint = con.constraints['str_matches']
+    constraint = con.default['str_matches']
     func = constraint['func']
     args = {'matches':r"^(abc)\1?de$"}
 
@@ -139,7 +139,7 @@ def test_str_matches():
     assert len(func("\12", constraint, args)) == 1
 
 def test_str_matches_ignore_case():
-    constraint = con.constraints['str_matches']
+    constraint = con.default['str_matches']
     func = constraint['func']
     args = {'matches':r"[a-z0-9]{3,}s\s$", 'ignore_case': True}
 
@@ -149,7 +149,7 @@ def test_str_matches_ignore_case():
     assert len(func("b33s  ", constraint, args)) == 1
 
 def test_str_matches_multi():
-    constraint = con.constraints['str_matches']
+    constraint = con.default['str_matches']
     func = constraint['func']
     args = {'matches':r"A.+\d$", 'multiline': True}
 
@@ -157,7 +157,7 @@ def test_str_matches_multi():
     assert len(func("a!!!!!5\n\n", constraint, args)) == 1
 
 def test_str_matches_ignore_case_multi_dotall():
-    constraint = con.constraints['str_matches']
+    constraint = con.default['str_matches']
     func = constraint['func']
     args = {'matches':r".*^Ye.*s\.", 'ignore_case': True, 'multiline': True, 'dotall': True}
 
@@ -167,7 +167,7 @@ def test_str_matches_ignore_case_multi_dotall():
     assert len(func("\n\nYaes.", constraint, args)) == 1
 
 def test_char_exclude():
-    constraint = con.constraints['str_exclude']
+    constraint = con.default['str_exclude']
     func = constraint['func']
     args = {'exclude': "abcd"}
 
@@ -176,7 +176,7 @@ def test_char_exclude():
     assert len(func("c", constraint, args)) == 1
 
 def test_char_exclude_igonre_case():
-    constraint = con.constraints['str_exclude']
+    constraint = con.default['str_exclude']
     func = constraint['func']
     args = {'exclude': "abcd", 'ignore_case': True}
 
@@ -187,7 +187,7 @@ def test_char_exclude_igonre_case():
     assert len(func("c", constraint, args)) == 1
 
 def test_ip4():
-    constraint = con.constraints['ip_version']
+    constraint = con.default['ip_version']
     func = constraint['func']
     args = {'version': 4}
 
@@ -198,7 +198,7 @@ def test_ip4():
     assert len(func("2001:db8::/64", constraint, args)) == 1
 
 def test_ip6():
-    constraint = con.constraints['ip_version']
+    constraint = con.default['ip_version']
     func = constraint['func']
     args = {'version': 6}
 
