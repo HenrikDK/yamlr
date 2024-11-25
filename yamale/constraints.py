@@ -3,8 +3,9 @@ import json
 import ipaddress
 from datetime import date, datetime
 from yamale import util
+from yamale import validators as val
 
-def validate_min(value, constraint, kwargs):
+def validate_min(c_sch, value, args, kwargs):
     errors = []
     min = kwargs['min']
 
@@ -15,11 +16,11 @@ def validate_min(value, constraint, kwargs):
 
     valid = min <= value
     if not valid:
-        message = constraint['fail'] % (value, min)
+        message = "%s is less than %s" % (value, min)
         errors.append(message)
     return errors
 
-def validate_max(value, constraint, kwargs):
+def validate_max(c_sch, value, args, kwargs):
     errors = []
     max = kwargs['max']
 
@@ -30,11 +31,11 @@ def validate_max(value, constraint, kwargs):
 
     valid = max >= value
     if not valid:
-        message = constraint['fail'] % (value, max)
+        message = "%s is greater than %s" % (value, max)
         errors.append(message)
     return errors
 
-def validate_length_min(value, constraint, kwargs):
+def validate_length_min(c_sch, value, args, kwargs):
     errors = []
     min = int(kwargs['min'])
     c_value = value
@@ -44,20 +45,20 @@ def validate_length_min(value, constraint, kwargs):
 
     valid = min <= len(c_value)
     if not valid:
-        message = constraint['fail'] % (c_value, min)
+        message = "Length of %s is less than %s" % (c_value, min)
         errors.append(message)
     return errors
 
-def validate_length_max(value, constraint, kwargs):
+def validate_length_max(c_sch, value, args, kwargs):
     errors = []
     max = int(kwargs['max'])
     valid = max >= len(value)
     if not valid:
-        message = constraint['fail'] % (value, max)
+        message = "Length of %s is greater than %s" % (value, max)
         errors.append(message)
     return errors
 
-def validate_str_equals(value, constraint, kwargs):
+def validate_str_equals(c_sch, value, args, kwargs):
     errors = []
     ignore_case = bool(kwargs.get('ignore_case', False))
     equals = str(kwargs['equals'])
@@ -69,12 +70,12 @@ def validate_str_equals(value, constraint, kwargs):
         valid = value.casefold() == equals.casefold()
     
     if not valid:
-        message = constraint['fail'] % (value, min)
+        message = "%s does not equal %s" % (value, min)
         errors.append(message)
     
     return errors
 
-def validate_str_starts_with(value, constraint, kwargs):
+def validate_str_starts_with(c_sch, value, args, kwargs):
     errors = []
     ignore_case = bool(kwargs.get('ignore_case', False))
     starts_with = str(kwargs['starts_with'])
@@ -90,12 +91,12 @@ def validate_str_starts_with(value, constraint, kwargs):
             valid = False
 
     if not valid:
-        message = constraint['fail'] % (value, min)
+        message = "%s does not start with %s" % (value, min)
         errors.append(message)
     
     return errors
 
-def validate_str_ends_with(value, constraint, kwargs):
+def validate_str_ends_with(c_sch, value, args, kwargs):
     errors = []
     ignore_case = bool(kwargs.get('ignore_case', False))
     ends_with = str(kwargs['ends_with'])
@@ -111,12 +112,12 @@ def validate_str_ends_with(value, constraint, kwargs):
             valid = False
     
     if not valid:
-        message = constraint['fail'] % (value, min)
+        message = "%s does not end with %s" % (value, min)
         errors.append(message)
     
     return errors
 
-def validate_str_matches(value, constraint, kwargs):
+def validate_str_matches(c_sch, value, args, kwargs):
     errors = []
     matches = str(kwargs['matches'])
     regex_flags = {"ignore_case": re.I, "multiline": re.M, "dotall": re.S}
@@ -131,12 +132,12 @@ def validate_str_matches(value, constraint, kwargs):
         valid = regex.match(value)
 
     if not valid:
-        message = constraint['fail'] % (value, matches)
+        message = "%s does not match regex '%s'" % (value, matches)
         errors.append(message)
     
     return errors
 
-def validate_character_exclude(value, constraint, kwargs):
+def validate_character_exclude(c_sch, value, args, kwargs):
     errors = []
     ignore_case = kwargs.get('ignore_case', False)
     exclude = str(kwargs['exclude'])
@@ -153,12 +154,12 @@ def validate_character_exclude(value, constraint, kwargs):
             valid = False
 
     if not valid:
-        message = constraint['fail'] % (value, failed_char)
+        message = "'%s' contains excluded character '%s'" % (value, failed_char)
         errors.append(message)
     
     return errors
 
-def validate_ip_version(value, constraint, kwargs):
+def validate_ip_version(c_sch, value, args, kwargs):
     errors = []
     version = int(kwargs['version'])
     
@@ -170,38 +171,41 @@ def validate_ip_version(value, constraint, kwargs):
         valid = False
     
     if not valid:
-        message = constraint['fail'] % (value, version)
+        message = "IP version of %s is not %s" % (value, version)
         errors.append(message)
     
     return errors
 
-def validate_key(value, constraint, kwargs):
+def validate_key(c_sch, value, args, kw_args):
     errors = []
-    key = kwargs['key']
+    key = kw_args['key']
 
     valid = True
     error_list = []
     for k in value.keys():
-        val_err = key.validate(k)
+        if k == '_lineno':
+            continue
+        print(k)
+        val_err = val.validate(c_sch, key, k)
         if val_err != []:
             error_list.extend(val_err)
             valid = False
 
     if not valid:
-        errors = [constraint['fail'] % (e) for e in error_list]
+        errors = ["Key error - %s" % (e) for e in error_list]
     
     return errors
 
 default = {
-    'min': {'fail': "%s is less than %s", 'func': validate_min, '_type': 'constraint'},
-    'max': {'fail': "%s is greater than %s", 'func': validate_max, '_type': 'constraint'},
-    'length_min': {'fail': "Length of %s is less than %s", 'func': validate_length_min, '_type': 'constraint'},
-    'length_max': {'fail': "Length of %s is greater than %s", 'func': validate_length_max, '_type': 'constraint'},
-    'str_equals': {'fail': "%s does not equal %s", 'func': validate_str_equals, '_type': 'constraint'},
-    'str_starts_with': {'fail': "%s does not start with %s", 'func': validate_str_starts_with, '_type': 'constraint'},
-    'str_ends_with': {'fail': "%s does not end with %s", 'func': validate_str_ends_with, '_type': 'constraint'},
-    'str_matches': {'fail': "%s does not match regex '%s'", 'func': validate_str_matches, '_type': 'constraint'},
-    'str_exclude': {'fail': "'%s' contains excluded character '%s'", 'func': validate_character_exclude, '_type': 'constraint'},
-    'ip_version': {'fail': "IP version of %s is not %s", 'func': validate_ip_version, '_type': 'constraint'},
-    'key': {'fail': "Key error - %s", 'func': validate_key, '_type': 'constraint'}
+    'min': {'func': validate_min, '_type': 'constraint'},
+    'max': {'func': validate_max, '_type': 'constraint'},
+    'length_min': {'func': validate_length_min, '_type': 'constraint'},
+    'length_max': {'func': validate_length_max, '_type': 'constraint'},
+    'str_equals': {'func': validate_str_equals, '_type': 'constraint'},
+    'str_starts_with': {'func': validate_str_starts_with, '_type': 'constraint'},
+    'str_ends_with': {'func': validate_str_ends_with, '_type': 'constraint'},
+    'str_matches': {'func': validate_str_matches, '_type': 'constraint'},
+    'str_exclude': {'func': validate_character_exclude, '_type': 'constraint'},
+    'ip_version': {'func': validate_ip_version, '_type': 'constraint'},
+    'key': {'func': validate_key, '_type': 'constraint'}
 }
