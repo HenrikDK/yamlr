@@ -185,7 +185,6 @@ def validate_key(c_sch, value, args, kw_args):
     for k in value.keys():
         if k == '_lineno':
             continue
-        print(k)
         val_err = val.validate(c_sch, key, k)
         if val_err != []:
             error_list.extend(val_err)

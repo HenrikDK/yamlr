@@ -107,6 +107,7 @@ def _validate_map_list(c_sch, c_val, data, path, strict):
     for key in util.get_keys(data):
         if key == '_lineno':
             continue
+
         sub_errors = []
         for s_val in c_val['children']:
             err = _validate_item(c_sch, s_val, data, path, strict, key)
