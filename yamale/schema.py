@@ -122,6 +122,7 @@ def _validate_map_list(c_sch, c_val, data, path, strict):
 
 def _validate_include(c_sch, c_val, data, path, strict):
     print(f'vinc - {c_val} - {data}')
+    strict = c_val['kw_args'].get('strict', False)
     include_name = c_val['args'][0]
     include_schema = c_sch['includes'].get(include_name)
     
