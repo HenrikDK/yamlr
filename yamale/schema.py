@@ -124,9 +124,9 @@ def _validate_include(c_sch, c_val, data, path, strict):
     print(f'vinc - {c_val} - {data}')
     include_name = c_val['args'][0]
     include_schema = c_sch['includes'].get(include_name)
-    print(repr(include_schema))
+    
     if not include_schema:
-        raise FatalValidationError("Include '%s' has not been defined." % c_val.include_name)
+        raise FatalValidationError("Include '%s' has not been defined." % include_name)
     
     return _validate(c_sch, include_schema, data, path, strict)
 
