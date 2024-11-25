@@ -218,7 +218,7 @@ def validate(c_sch, c_val, value):
 
         constraint = c_sch['constraints'][c_name]
 
-        error = constraint['func'](value, constraint, kw_args)
+        error = constraint['func'](c_sch, value, args, kw_args)
         if len(error) > 0:
             errors.extend(error)
     
