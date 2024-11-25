@@ -192,7 +192,7 @@ def validate_key(value, constraint, kwargs):
     
     return errors
 
-constraints = {
+default = {
     'min': {'fail': "%s is less than %s", 'func': validate_min, '_type': 'constraint'},
     'max': {'fail': "%s is greater than %s", 'func': validate_max, '_type': 'constraint'},
     'length_min': {'fail': "Length of %s is less than %s", 'func': validate_length_min, '_type': 'constraint'},
