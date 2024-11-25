@@ -6,13 +6,14 @@ def _extract_expression(call_node, validators):
     result = {}
     # Validate that the expression uses a known, registered validator.
     try:
-        
         func_name = call_node.func.id
         
         kw_args = {} 
         for kw in call_node.keywords:
           if isinstance(kw.value, ast.Constant):
               kw_args[kw.arg] = kw.value.value
+          elif isinstance(kw.value, ast.Call):
+              kw_args[kw.arg] = _extract_expression(kw.value, validators)
           else:
               kw_args[kw.arg] = ast.unparse(kw.value)
               print(kw_args[kw.arg])
