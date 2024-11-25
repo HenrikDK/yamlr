@@ -9,9 +9,9 @@ def validate_min(c_sch, value, args, kwargs):
     errors = []
     min = kwargs['min']
 
-    if isinstance(value, datetime):
+    if isinstance(value, datetime) and not isinstance(min, datetime):
         min = util.convert_to_datetime(min)
-    elif isinstance(value, date):
+    elif isinstance(value, date) and not isinstance(min, date):
         min = util.convert_to_date(min)
 
     valid = min <= value
@@ -24,9 +24,9 @@ def validate_max(c_sch, value, args, kwargs):
     errors = []
     max = kwargs['max']
 
-    if isinstance(value, datetime):
+    if isinstance(value, datetime) and not isinstance(max, datetime):
         max = util.convert_to_datetime(max)
-    elif isinstance(value, date):
+    elif isinstance(value, date) and not isinstance(max, date):
         max = util.convert_to_date(max)
 
     valid = max >= value
