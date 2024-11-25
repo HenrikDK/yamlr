@@ -9,7 +9,7 @@ try:
 except ImportError:
     from collections import Sequence, Mapping
 
-def validate_str(c_sch, value, args = None, kw_args = None):
+def validate_str(c_sch, c_val, value):
     valid = util.isstr(value)
     errors = []
     if not valid:
@@ -17,7 +17,7 @@ def validate_str(c_sch, value, args = None, kw_args = None):
         errors.append(error)
     return errors
 
-def validate_num(c_sch, value, args = None, kw_args = None):
+def validate_num(c_sch, c_val, value):
     valid = isinstance(value, (int, float)) and not isinstance(value, bool)
     errors = []
     if not valid:
@@ -25,7 +25,7 @@ def validate_num(c_sch, value, args = None, kw_args = None):
         errors.append(error)
     return errors
 
-def validate_int(c_sch, value, args = None, kw_args = None):
+def validate_int(c_sch, c_val, value):
     valid = isinstance(value, int) and not isinstance(value, bool)
     errors = []
     if not valid:
@@ -33,7 +33,7 @@ def validate_int(c_sch, value, args = None, kw_args = None):
         errors.append(error)
     return errors
 
-def validate_bool(c_sch, value, args = None, kw_args = None):
+def validate_bool(c_sch, c_val, value):
     valid = isinstance(value, bool)
     errors = []
     if not valid:
@@ -41,15 +41,15 @@ def validate_bool(c_sch, value, args = None, kw_args = None):
         errors.append(error)
     return errors
 
-def validate_enum(c_sch, value, args = None, kw_args = None):
-    valid = value in args
+def validate_enum(c_sch, c_val, value):
+    valid = value in c_val['args']
     errors = []
     if not valid:
-        error = "'%s' not in %s." % (value, args)
+        error = "'%s' not in %s." % (value, c_val['args'])
         errors.append(error)
     return errors
 
-def validate_day(c_sch, value, args = None, kw_args = None):
+def validate_day(c_sch, c_val, value):
     valid = isinstance(value, date)
     errors = []
     if not valid:
@@ -57,7 +57,7 @@ def validate_day(c_sch, value, args = None, kw_args = None):
         errors.append(error)
     return errors
 
-def validate_timestamp(c_sch, value, args = None, kw_args = None):
+def validate_timestamp(c_sch, c_val, value):
     valid = isinstance(value, datetime)
     errors = []
     if not valid:
@@ -65,7 +65,7 @@ def validate_timestamp(c_sch, value, args = None, kw_args = None):
         errors.append(error)
     return errors
 
-def validate_map(c_sch, value, args = None, kw_args = None):
+def validate_map(c_sch, c_val, value):
     valid = isinstance(value, Mapping)
     errors = []
     if not valid:
@@ -73,7 +73,7 @@ def validate_map(c_sch, value, args = None, kw_args = None):
         errors.append(error)
     return errors
 
-def validate_list(c_sch, value, args = None, kw_args = None):
+def validate_list(c_sch, c_val, value):
     valid = isinstance(value, Sequence) and not util.isstr(value)
     errors = []
     if not valid:
@@ -81,15 +81,15 @@ def validate_list(c_sch, value, args = None, kw_args = None):
         errors.append(error)
     return errors
 
-def validate_include(c_sch, value, args = None, kw_args = None):
+def validate_include(c_sch, c_val, value):
     return []
 
-def validate_any(c_sch, value, args = None, kw_args = None):
+def validate_any(c_sch, c_val, value):
     return []
 
-def validate_subset(c_sch, value, args = None, kw_args = None):
-    allow_empty = bool(kw_args.get("allow_empty", False))
-    validators = [val for val in args if isinstance(val, dict) and 'name' in val]
+def validate_subset(c_sch, c_val, value):
+    allow_empty = bool(c_val['kw_args'].get("allow_empty", False))
+    validators = [val for val in c_val['children'] if isinstance(val, dict) and 'name' in val]
     if len(validators) == 0:
         raise ValueError("subset requires at least one validator!")
 
@@ -101,7 +101,7 @@ def validate_subset(c_sch, value, args = None, kw_args = None):
         errors.append(error)
     return errors
 
-def validate_null(c_sch, value, args = None, kw_args = None):
+def validate_null(c_sch, c_val, value):
     valid = value is None
     errors = []
     if not valid:
@@ -109,14 +109,14 @@ def validate_null(c_sch, value, args = None, kw_args = None):
         errors.append(error)
     return errors
 
-def validate_regex(c_sch, value, args = None, kw_args = None):
-    regex_name = kw_args.get("name", 'regex match')
+def validate_regex(c_sch, c_val, value):
+    regex_name = c_val['kw_args'].get("name", 'regex match')
     regex_flags = {"ignore_case": re.I, "multiline": re.M, "dotall": re.S}
     flags = 0
     for k, v in util.get_iter(regex_flags):
-        flags |= v if kw_args.get(k, False) else 0
+        flags |= v if c_val['kw_args'].get(k, False) else 0
 
-    regexes = [re.compile(arg, flags) for arg in args if util.isstr(arg)]
+    regexes = [re.compile(arg, flags) for arg in c_val['args'] if util.isstr(arg)]
 
     valid = util.isstr(value) and any(r.match(value) for r in regexes)
 
@@ -126,7 +126,7 @@ def validate_regex(c_sch, value, args = None, kw_args = None):
         errors.append(error)
     return errors
 
-def validate_ip(c_sch, value, args = None, kw_args = None):
+def validate_ip(c_sch, c_val, value):
     valid = True
     try:
         ipaddress.ip_interface(util.to_unicode(value))
@@ -139,7 +139,7 @@ def validate_ip(c_sch, value, args = None, kw_args = None):
         errors.append(error)
     return errors
 
-def validate_mac(c_sch, value, args = None, kw_args = None):
+def validate_mac(c_sch, c_val, value):
     regexes = [
         re.compile(r"[0-9a-fA-F]{2}([-:]?)[0-9a-fA-F]{2}(\1[0-9a-fA-F]{2}){4}$"),
         re.compile(r"[0-9a-fA-F]{4}([-:]?)[0-9a-fA-F]{4}(\1[0-9a-fA-F]{4})$"),
@@ -153,7 +153,7 @@ def validate_mac(c_sch, value, args = None, kw_args = None):
         errors.append(error)
     return errors
 
-def validate_semver(c_sch, value, args = None, kw_args = None):
+def validate_semver(c_sch, c_val, value):
     # https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
     regexes = [
         re.compile(r"^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"),
@@ -198,7 +198,7 @@ def validate(c_sch, c_val, value):
     c_sch['log'].append(f"{'vv':10} - {value} - {args} - {kw_args}")
 
     # Make sure the type validates first.
-    errors = validator['func'](c_sch, value, args, kw_args)
+    errors = validator['func'](c_sch, c_val, value)
     c_sch['log'].append(f"{'vv - e':10} - {errors}")
     
     if len(errors) > 0:
@@ -207,17 +207,12 @@ def validate(c_sch, c_val, value):
 
     # Then validate all the constraints second.
     for c_name in validator['constraints']:
-        c_key = c_name
-        index = c_name.find('_')
-        if index > 0:
-            c_key = c_name[index + 1:]
+        constraint = c_sch['constraints'][c_name]
         
-        if c_key not in kw_args:
+        if constraint['field'] not in kw_args:
             continue
 
-        constraint = c_sch['constraints'][c_name]
-
-        error = constraint['func'](c_sch, value, args, kw_args)
+        error = constraint['func'](c_sch, c_val, value)
         if len(error) > 0:
             errors.extend(error)
     
