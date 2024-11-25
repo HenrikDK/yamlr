@@ -9,107 +9,108 @@ try:
 except ImportError:
     from collections import Sequence, Mapping
 
-def validate_str(current_value, all_values, args = None, kw_args = None):
-    valid = util.isstr(current_value)
+def validate_str(c_sch, value, args = None, kw_args = None):
+    valid = util.isstr(value)
     errors = []
     if not valid:
-        error = "'%s' is not a str." % (current_value)
+        error = "'%s' is not a str." % (value)
         errors.append(error)
     return errors
 
-def validate_num(current_value, all_values, args = None, kw_args = None):
-    valid = isinstance(current_value, (int, float)) and not isinstance(current_value, bool)
+def validate_num(c_sch, value, args = None, kw_args = None):
+    valid = isinstance(value, (int, float)) and not isinstance(value, bool)
     errors = []
     if not valid:
-        error = "'%s' is not a num." % (current_value)
+        error = "'%s' is not a num." % (value)
         errors.append(error)
     return errors
 
-def validate_int(current_value, all_values, args = None, kw_args = None):
-    valid = isinstance(current_value, int) and not isinstance(current_value, bool)
+def validate_int(c_sch, value, args = None, kw_args = None):
+    valid = isinstance(value, int) and not isinstance(value, bool)
     errors = []
     if not valid:
-        error = "'%s' is not an int." % (current_value)
+        error = "'%s' is not an int." % (value)
         errors.append(error)
     return errors
 
-def validate_bool(current_value, all_values, args = None, kw_args = None):
-    valid = isinstance(current_value, bool)
+def validate_bool(c_sch, value, args = None, kw_args = None):
+    valid = isinstance(value, bool)
     errors = []
     if not valid:
-        error = "'%s' is not a bool." % (current_value)
+        error = "'%s' is not a bool." % (value)
         errors.append(error)
     return errors
 
-def validate_enum(current_value, all_values, args = None, kw_args = None):
-    valid = current_value in args
+def validate_enum(c_sch, value, args = None, kw_args = None):
+    valid = value in args
     errors = []
     if not valid:
-        error = "'%s' not in %s." % (current_value, args)
+        error = "'%s' not in %s." % (value, args)
         errors.append(error)
     return errors
 
-def validate_day(current_value, all_values, args = None, kw_args = None):
-    valid = isinstance(current_value, date)
+def validate_day(c_sch, value, args = None, kw_args = None):
+    valid = isinstance(value, date)
     errors = []
     if not valid:
-        error = "'%s' is not a valid date (Format: YYYY-MM-DD)." % (current_value)
+        error = "'%s' is not a valid date (Format: YYYY-MM-DD)." % (value)
         errors.append(error)
     return errors
 
-def validate_timestamp(current_value, all_values, args = None, kw_args = None):
-    valid = isinstance(current_value, datetime)
+def validate_timestamp(c_sch, value, args = None, kw_args = None):
+    valid = isinstance(value, datetime)
     errors = []
     if not valid:
-        error = "'%s' is not a valid datetime (Format: YYYY-MM-DD HH:MM:SS)." % (current_value)
+        error = "'%s' is not a valid datetime (Format: YYYY-MM-DD HH:MM:SS)." % (value)
         errors.append(error)
     return errors
 
-def validate_map(current_value, all_values, args = None, kw_args = None):
-    valid = isinstance(current_value, Mapping)
+def validate_map(c_sch, value, args = None, kw_args = None):
+    valid = isinstance(value, Mapping)
     errors = []
     if not valid:
-        error = "'%s' is not a valid map." % (current_value)
+        error = "'%s' is not a valid map." % (value)
         errors.append(error)
     return errors
 
-def validate_list(current_value, all_values, args = None, kw_args = None):
-    valid = isinstance(current_value, Sequence) and not util.isstr(current_value)
+def validate_list(c_sch, value, args = None, kw_args = None):
+    valid = isinstance(value, Sequence) and not util.isstr(value)
     errors = []
     if not valid:
-        error = "'%s' is not a valid list." % (current_value)
+        error = "'%s' is not a valid list." % (value)
         errors.append(error)
     return errors
 
-def validate_include(current_value, all_values, args = None, kw_args = None):
+def validate_include(c_sch, value, args = None, kw_args = None):
     return []
 
-def validate_any(current_value, all_values, args = None, kw_args = None):
+def validate_any(c_sch, value, args = None, kw_args = None):
     return []
 
-def validate_subset(current_value, all_values, args = None, kw_args = None):
+def validate_subset(c_sch, value, args = None, kw_args = None):
     allow_empty = bool(kw_args.get("allow_empty", False))
     validators = [val for val in args if isinstance(val, dict) and 'name' in val]
     if len(validators) == 0:
         raise ValueError("subset requires at least one validator!")
 
-    valid = allow_empty or current_value is not None
+    print(f'vs - {value}')
+    valid = allow_empty or value is not None
     errors = []
     if not valid:
         error = "'subset' may not be an empty set."
         errors.append(error)
     return errors
 
-def validate_null(current_value, all_values, args = None, kw_args = None):
-    valid = current_value is None
+def validate_null(c_sch, value, args = None, kw_args = None):
+    valid = value is None
     errors = []
     if not valid:
-        error = "'%s' is not None." % (current_value)
+        error = "'%s' is not None." % (value)
         errors.append(error)
     return errors
 
-def validate_regex(current_value, all_values, args = None, kw_args = None):
-    valid = current_value is None
+def validate_regex(c_sch, value, args = None, kw_args = None):
+    valid = value is None
     regex_name = kw_args.get("name", 'regex match')
     regex_flags = {"ignore_case": re.I, "multiline": re.M, "dotall": re.S}
     flags = 0
@@ -118,52 +119,52 @@ def validate_regex(current_value, all_values, args = None, kw_args = None):
 
     regexes = [re.compile(arg, flags) for arg in args if util.isstr(arg)]
 
-    valid = util.isstr(current_value) and any(r.match(current_value) for r in regexes)
+    valid = util.isstr(value) and any(r.match(value) for r in regexes)
 
     errors = []
     if not valid:
-        error = "'%s' is not a %s." % (current_value, regex_name)        
+        error = "'%s' is not a %s." % (value, regex_name)        
         errors.append(error)
     return errors
 
-def validate_ip(current_value, all_values, args = None, kw_args = None):
+def validate_ip(c_sch, value, args = None, kw_args = None):
     valid = True
     try:
-        ipaddress.ip_interface(util.to_unicode(current_value))
+        ipaddress.ip_interface(util.to_unicode(value))
     except ValueError:
         valid = False
     
     errors = []
     if not valid:
-        error = "'%s' is not a valid ip." % (current_value)
+        error = "'%s' is not a valid ip." % (value)
         errors.append(error)
     return errors
 
-def validate_mac(current_value, all_values, args = None, kw_args = None):
+def validate_mac(c_sch, value, args = None, kw_args = None):
     regexes = [
         re.compile(r"[0-9a-fA-F]{2}([-:]?)[0-9a-fA-F]{2}(\1[0-9a-fA-F]{2}){4}$"),
         re.compile(r"[0-9a-fA-F]{4}([-:]?)[0-9a-fA-F]{4}(\1[0-9a-fA-F]{4})$"),
     ]
     
-    valid = util.isstr(current_value) and any(r.match(current_value) for r in regexes)
+    valid = util.isstr(value) and any(r.match(value) for r in regexes)
     
     errors = []
     if not valid:
-        error = "'%s' is not a valid mac address." % (current_value)
+        error = "'%s' is not a valid mac address." % (value)
         errors.append(error)
     return errors
 
-def validate_semver(current_value, all_values, args = None, kw_args = None):
+def validate_semver(c_sch, value, args = None, kw_args = None):
     # https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
     regexes = [
         re.compile(r"^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"),
     ]
     
-    valid = util.isstr(current_value) and any(r.match(current_value) for r in regexes)
+    valid = util.isstr(value) and any(r.match(value) for r in regexes)
     
     errors = []
     if not valid:
-        error = "'%s' is not a valid mac address." % (current_value)
+        error = "'%s' is not a valid mac address." % (value)
         errors.append(error)
     return errors
 
@@ -191,14 +192,15 @@ default = {
 def validate(c_sch, c_val, value):
     validator_name = c_val['name']
     validator = c_sch['validators'][validator_name]
-    all_values = c_sch['data']
 
     args = c_val['args']
     kw_args = c_val['kw_args']
     errors = []
+    print(f'vv   - {value} - na - {args} - {kw_args}')
 
     # Make sure the type validates first.
-    errors = validator['func'](value, all_values, args, kw_args)
+    errors = validator['func'](c_sch, value, args, kw_args)
+    print(f'vv   - {errors}')
     if len(errors) > 0:
         # todo: return line number, and message
         return errors
