@@ -9,8 +9,8 @@ class FatalValidationError(Exception):
 
 # validate schema
 def validate(c_sch, data, data_name, strict):
-    c_sch['data'] = data
-    print(f'V    - state: {c_sch.keys()}')
+    c_sch['log'].append(f"{'V':10} - state: {c_sch.keys()}")
+
     path = util.get_path()
     try:
         errors = _validate(c_sch, c_sch['schema'], data, path, strict)
@@ -20,7 +20,8 @@ def validate(c_sch, data, data_name, strict):
 
 # Validate data with validator, returns an array of errors.
 def _validate(c_sch, c_val, data, path, strict):
-    print(f"v    - {c_val} - {data}")
+    c_sch['log'].append(f"{'v':10} - {c_val} - {data}")
+
     if (util.is_list(c_val) or util.is_map(c_val)) and '_type' not in c_val: # does not work, since we now use dicts for everything
         return _validate_static_map_list(c_sch, c_val, data, path, strict)
 
@@ -33,6 +34,7 @@ def _validate(c_sch, c_val, data, path, strict):
         return errors
 
     errors += _validate_primitive(c_sch, c_val, data, path)
+    c_sch['log'].append(f"{'v - e':10} - {errors}")
 
     if errors:
         return errors
@@ -53,7 +55,8 @@ def _validate(c_sch, c_val, data, path, strict):
 
 # Fetch item from data at the position key and validate with validator. Returns an array of errors.
 def _validate_item(c_sch, c_val, data, path, strict, key):
-    print(f'vit  - {key} - {c_val}')
+    c_sch['log'].append(f"{'v-item':10} - {key} - {c_val}")
+
     errors = []
     path = util.get_path(path, key)
     try:  # Pull value out of data. Data can be a map or a list/sequence
@@ -73,7 +76,8 @@ def _validate_item(c_sch, c_val, data, path, strict, key):
     return _validate(c_sch, c_val, data_item, path, strict)
 
 def _validate_static_map_list(c_sch, c_val, data, path, strict):
-    print(f'vsml - {c_val} - {data}')
+    c_sch['log'].append(f"{'v-sml':10} - {c_val} - {data}")
+    
     if util.is_map(c_val) and not util.is_map(data):
         return ["%s : '%s' is not a map" % (path, data)]
 
@@ -94,11 +98,12 @@ def _validate_static_map_list(c_sch, c_val, data, path, strict):
     for key, s_val in util.get_iter(c_val):
         errors += _validate_item(c_sch, s_val, data, path, strict, key)
     
-    print(f'vsml - errors - {errors}')
+    c_sch['log'].append(f"{'v-sml - e':10} - {errors}")
     return errors
 
 def _validate_map_list(c_sch, c_val, data, path, strict):
-    print(f'vml  - {c_val} - {data}')
+    c_sch['log'].append(f"{'v-ml':10} - {c_val} - {data}")
+    
     errors = []
 
     if not c_val['children']:
@@ -122,7 +127,8 @@ def _validate_map_list(c_sch, c_val, data, path, strict):
     return errors
 
 def _validate_include(c_sch, c_val, data, path, strict):
-    print(f'vinc - {c_val} - {data}')
+    c_sch['log'].append(f"{'v-inc':10} - {c_val} - {data}")
+    
     strict = c_val['kw_args'].get('strict', False)
     include_name = c_val['args'][0]
     include_schema = c_sch['includes'].get(include_name)
@@ -133,7 +139,7 @@ def _validate_include(c_sch, c_val, data, path, strict):
     return _validate(c_sch, include_schema, data, path, strict)
 
 def _validate_any(c_sch, c_val, data, path, strict):
-    print(f'vany - {c_val.keys()} - {data}')
+    c_sch['log'].append(f"{'v-any':10} - {c_val} - {data}")
     
     if len(c_val['children']) == 0:
         return []
@@ -155,7 +161,7 @@ def _validate_any(c_sch, c_val, data, path, strict):
     return errors
 
 def _validate_subset(c_sch, c_val, data, path, strict):
-    print(f'vsub - {c_val.keys()} - {data}')
+    c_sch['log'].append(f"{'v-sub':10} - {c_val} - {data}")
 
     def _internal_validate(internal_data):
         validators = _get_include_validators_for_key(c_sch, c_val, internal_data)
@@ -184,7 +190,8 @@ def _validate_subset(c_sch, c_val, data, path, strict):
     return errors
 
 def _get_include_validators_for_key(c_sch, c_val, internal_data):
-    print(f'vfk  - {c_val}')
+    c_sch['log'].append(f"{'v-ivfk':10} - {c_val} - {internal_data}")
+
     key = c_val['kw_args'].get('key', None)
 
     if not key or key not in internal_data: 
@@ -209,9 +216,9 @@ def _get_include_validators_for_key(c_sch, c_val, internal_data):
     return result
 
 def _validate_primitive(c_sch, c_val, data, path):
-    print(f'vp   - {c_val} - {data}')
-    errors = val.validate(c_sch, c_val, data)
+    c_sch['log'].append(f"{'v-p':10} - {c_val} - {data}")
 
+    errors = val.validate(c_sch, c_val, data)
     for i, error in enumerate(errors):
         errors[i] = ("%s: " % path) + error
 
