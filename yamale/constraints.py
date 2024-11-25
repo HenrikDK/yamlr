@@ -1,11 +1,18 @@
 import re
 import json
 import ipaddress
+from datetime import date, datetime
 from yamale import util
 
 def validate_min(value, constraint, kwargs):
     errors = []
     min = kwargs['min']
+
+    if isinstance(value, datetime):
+        min = util.convert_to_datetime(min)
+    elif isinstance(value, date):
+        min = util.convert_to_date(min)
+
     valid = min <= value
     if not valid:
         message = constraint['fail'] % (value, min)
@@ -15,6 +22,12 @@ def validate_min(value, constraint, kwargs):
 def validate_max(value, constraint, kwargs):
     errors = []
     max = kwargs['max']
+
+    if isinstance(value, datetime):
+        max = util.convert_to_datetime(max)
+    elif isinstance(value, date):
+        max = util.convert_to_date(max)
+
     valid = max >= value
     if not valid:
         message = constraint['fail'] % (value, max)
