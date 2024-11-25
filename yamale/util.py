@@ -3,6 +3,8 @@ import datetime
 
 def get_path(path = '', key=''):
     if isinstance(key, int):
+        if len(path) == 0:
+            return f'{key}'
         return f'{path}.[{key}]'
 
     if len(key) == 0:
