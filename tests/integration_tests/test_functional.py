@@ -134,7 +134,7 @@ def test_nested_schema():
     c_sch = yamale.make_schema(get_fixture(nested["schema"]))
 
     nested_schema = c_sch['schema']
-    print(nested_schema)
+
     assert nested_schema["string"]['name'] == 'str'
     assert isinstance(nested_schema["list"], (list, tuple))
     assert nested_schema["list"][0]['name'] == 'str'
@@ -279,6 +279,7 @@ def test_bad_subset():
 
 
 """
+
 def test_bad_subset2():
     exp = ["subset_list: '[1]' is not a int.", "subset_list: '[1]' is not a str."]
     match_exception_lines(subset["schema"], subset["bad2"], exp)
