@@ -5,9 +5,9 @@ from datetime import date, datetime
 from yamale import util
 from yamale import validators as val
 
-def validate_min(c_sch, value, args, kwargs):
+def validate_min(c_sch, c_val, value):
     errors = []
-    min = kwargs['min']
+    min = c_val['kw_args']['min']
 
     if isinstance(value, datetime) and not isinstance(min, datetime):
         min = util.convert_to_datetime(min)
@@ -20,9 +20,9 @@ def validate_min(c_sch, value, args, kwargs):
         errors.append(message)
     return errors
 
-def validate_max(c_sch, value, args, kwargs):
+def validate_max(c_sch, c_val, value):
     errors = []
-    max = kwargs['max']
+    max = c_val['kw_args']['max']
 
     if isinstance(value, datetime) and not isinstance(max, datetime):
         max = util.convert_to_datetime(max)
@@ -35,9 +35,9 @@ def validate_max(c_sch, value, args, kwargs):
         errors.append(message)
     return errors
 
-def validate_length_min(c_sch, value, args, kwargs):
+def validate_length_min(c_sch, c_val, value):
     errors = []
-    min = int(kwargs['min'])
+    min = int(c_val['kw_args']['min'])
     c_value = value
     if isinstance(value, dict):
         c_value = json.loads(json.dumps(value))
@@ -49,19 +49,19 @@ def validate_length_min(c_sch, value, args, kwargs):
         errors.append(message)
     return errors
 
-def validate_length_max(c_sch, value, args, kwargs):
+def validate_length_max(c_sch, c_val, value):
     errors = []
-    max = int(kwargs['max'])
+    max = int(c_val['kw_args']['max'])
     valid = max >= len(value)
     if not valid:
         message = "Length of %s is greater than %s" % (value, max)
         errors.append(message)
     return errors
 
-def validate_str_equals(c_sch, value, args, kwargs):
+def validate_str_equals(c_sch, c_val, value):
     errors = []
-    ignore_case = bool(kwargs.get('ignore_case', False))
-    equals = str(kwargs['equals'])
+    ignore_case = bool(c_val['kw_args'].get('ignore_case', False))
+    equals = str(c_val['kw_args']['equals'])
     
     valid = True
     if not ignore_case:
@@ -75,10 +75,10 @@ def validate_str_equals(c_sch, value, args, kwargs):
     
     return errors
 
-def validate_str_starts_with(c_sch, value, args, kwargs):
+def validate_str_starts_with(c_sch, c_val, value):
     errors = []
-    ignore_case = bool(kwargs.get('ignore_case', False))
-    starts_with = str(kwargs['starts_with'])
+    ignore_case = bool(c_val['kw_args'].get('ignore_case', False))
+    starts_with = str(c_val['kw_args']['starts_with'])
 
     valid = True
     if not ignore_case:
@@ -96,10 +96,10 @@ def validate_str_starts_with(c_sch, value, args, kwargs):
     
     return errors
 
-def validate_str_ends_with(c_sch, value, args, kwargs):
+def validate_str_ends_with(c_sch, c_val, value):
     errors = []
-    ignore_case = bool(kwargs.get('ignore_case', False))
-    ends_with = str(kwargs['ends_with'])
+    ignore_case = bool(c_val['kw_args'].get('ignore_case', False))
+    ends_with = str(c_val['kw_args']['ends_with'])
 
     valid = True
     if not ignore_case:
@@ -117,14 +117,14 @@ def validate_str_ends_with(c_sch, value, args, kwargs):
     
     return errors
 
-def validate_str_matches(c_sch, value, args, kwargs):
+def validate_str_matches(c_sch, c_val, value):
     errors = []
-    matches = str(kwargs['matches'])
+    matches = str(c_val['kw_args']['matches'])
     regex_flags = {"ignore_case": re.I, "multiline": re.M, "dotall": re.S}
     
     flags = 0
     for k, v in util.get_iter(regex_flags):
-        flags |= v if kwargs.get(k, False) else 0
+        flags |= v if c_val['kw_args'].get(k, False) else 0
 
     valid = True
     if matches is not None:
@@ -137,10 +137,10 @@ def validate_str_matches(c_sch, value, args, kwargs):
     
     return errors
 
-def validate_character_exclude(c_sch, value, args, kwargs):
+def validate_character_exclude(c_sch, c_val, value):
     errors = []
-    ignore_case = kwargs.get('ignore_case', False)
-    exclude = str(kwargs['exclude'])
+    ignore_case = c_val['kw_args'].get('ignore_case', False)
+    exclude = str(c_val['kw_args']['exclude'])
 
     valid = True
     failed_char = []
@@ -160,9 +160,9 @@ def validate_character_exclude(c_sch, value, args, kwargs):
     
     return errors
 
-def validate_ip_version(c_sch, value, args, kwargs):
+def validate_ip_version(c_sch, c_val, value):
     errors = []
-    version = int(kwargs['version'])
+    version = int(c_val['kw_args']['version'])
     
     valid = True
     try:
@@ -177,9 +177,9 @@ def validate_ip_version(c_sch, value, args, kwargs):
     
     return errors
 
-def validate_key(c_sch, value, args, kw_args):
+def validate_key(c_sch, c_val, value):
     errors = []
-    key = kw_args['key']
+    key = c_val['kw_args']['key']
 
     valid = True
     error_list = []
@@ -197,15 +197,15 @@ def validate_key(c_sch, value, args, kw_args):
     return errors
 
 default = {
-    'min': {'func': validate_min, '_type': 'constraint'},
-    'max': {'func': validate_max, '_type': 'constraint'},
-    'length_min': {'func': validate_length_min, '_type': 'constraint'},
-    'length_max': {'func': validate_length_max, '_type': 'constraint'},
-    'str_equals': {'func': validate_str_equals, '_type': 'constraint'},
-    'str_starts_with': {'func': validate_str_starts_with, '_type': 'constraint'},
-    'str_ends_with': {'func': validate_str_ends_with, '_type': 'constraint'},
-    'str_matches': {'func': validate_str_matches, '_type': 'constraint'},
-    'str_exclude': {'func': validate_character_exclude, '_type': 'constraint'},
-    'ip_version': {'func': validate_ip_version, '_type': 'constraint'},
-    'key': {'func': validate_key, '_type': 'constraint'}
+    'min': {'func': validate_min, 'field':'min', '_type': 'constraint'},
+    'max': {'func': validate_max, 'field':'max', '_type': 'constraint'},
+    'length_min': {'func': validate_length_min, 'field':'min', '_type': 'constraint'},
+    'length_max': {'func': validate_length_max, 'field':'max', '_type': 'constraint'},
+    'str_equals': {'func': validate_str_equals, 'field':'equals', '_type': 'constraint'},
+    'str_starts_with': {'func': validate_str_starts_with, 'field':'starts_with', '_type': 'constraint'},
+    'str_ends_with': {'func': validate_str_ends_with, 'field':'ends_with', '_type': 'constraint'},
+    'str_matches': {'func': validate_str_matches, 'field':'matches', '_type': 'constraint'},
+    'str_exclude': {'func': validate_character_exclude, 'field':'exclude', '_type': 'constraint'},
+    'ip_version': {'func': validate_ip_version, 'field':'version', '_type': 'constraint'},
+    'key': {'func': validate_key, 'field':'key', '_type': 'constraint'}
 }
