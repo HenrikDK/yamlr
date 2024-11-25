@@ -11,7 +11,11 @@ def _extract_expression(call_node, validators):
         
         kw_args = {} 
         for kw in call_node.keywords:
-          kw_args[kw.arg] = kw.value.value
+          if isinstance(kw.value, ast.Constant):
+              kw_args[kw.arg] = kw.value.value
+          else:
+              kw_args[kw.arg] = ast.unparse(kw.value)
+              print(kw_args[kw.arg])
         
         args = [a.value for a in call_node.args if isinstance(a, ast.Constant)]
         result = {
