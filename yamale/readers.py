@@ -2,6 +2,7 @@ import yaml, json
 from io import StringIO
 from yamale import util, parser
 from yamale import validators as val
+from yamale import constraints as con
 from yaml.loader import SafeLoader
 
 class SafeLineLoader(SafeLoader):
@@ -33,9 +34,10 @@ def parse_yaml(path=None, content=None, type='schema'):
 """
 Go through a schema and map validators.
 """
-def process_schema(raw_schema, name="", validators=[], includes={}):
+def process_schema(raw_schema, name="", validators=[], constraints=[], includes={}):
     result = {
         'validators': validators or val.default,
+        'constraints': constraints or con.default,
         'raw_schema': raw_schema,
         'name': name,
         'includes': includes
