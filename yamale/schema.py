@@ -64,7 +64,7 @@ def _validate_item(c_sch, c_val, data, path, strict, key):
         if 'kw_args' in c_val:
             required = c_val['kw_args'].get('required', True)
         
-        if 'name' in c_val and c_val['name'] in val.default and not required:
+        if 'name' in c_val and c_val['name'] in c_sch['validators'] and not required:
             return errors
         # SHUT DOWN EVERYTHING
         errors.append("%s: Required field missing" % path)
