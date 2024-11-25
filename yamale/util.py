@@ -1,4 +1,5 @@
 from collections.abc import Mapping, Sequence
+import datetime
 
 def get_path(path = '', key=''):
     if isinstance(key, int):
@@ -15,6 +16,19 @@ def get_path(path = '', key=''):
 def isstr(s):
     return isinstance(s, str)
 
+
+def convert_to_date(value):
+    try:
+        time = datetime.datetime.strptime(value, "%Y-%m-%d")
+        return datetime.date(time.year, time.month, time.day)
+    except (TypeError, ValueError):
+        raise SyntaxError("%s is not a date" % (value))
+
+def convert_to_datetime(value):
+    try:
+        return datetime.datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
+    except (TypeError, ValueError):
+        raise SyntaxError("%s is not a date" % (value))
 
 def to_unicode(s):
     return s
