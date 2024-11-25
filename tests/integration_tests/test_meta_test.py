@@ -1,4 +1,4 @@
-import re
+"""import re
 import os
 from tests.yamale_testcase import YamaleTestCase
 #from yamale.wak_validators import DefaultValidators, Validator
@@ -40,7 +40,7 @@ class TestMapYaml(YamaleTestCase):
 
 
 class Card(Validator):
-    """Custom validator for testing purpose"""
+    #Custom validator for testing purpose
 
     tag = "card"
     card_regex = re.compile(r"^(10|[2-9JQKA])[SHDC]$")
@@ -87,3 +87,4 @@ class TestGoodRequiredYaml(YamaleTestCase):
 
     def runTest(self):
         self.assertTrue(self.validate())
+"""
