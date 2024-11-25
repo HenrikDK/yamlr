@@ -185,11 +185,14 @@ def test_bad_lists():
 def test_bad2_lists():
     assert count_exception_lines(lists["schema"], lists["bad2"]) == 2
 
+def test_bad_maps():
+    assert count_exception_lines(maps["schema"], maps["bad"]) == 7
+
 def test_bad_maps2():
     assert count_exception_lines(maps["schema"], maps["bad2"]) == 1
 
-def test_bad_maps():
-    assert count_exception_lines(maps["schema"], maps["bad"]) == 7
+def test_bad_keywords():
+    assert count_exception_lines(keywords["schema"], keywords["bad"]) == 9
 
 """
 ["map.bad: '12.5' is not a str.", 
@@ -198,8 +201,6 @@ def test_bad_maps():
  "map.not: '[]' is not an int.", 
  "max: Length of {'a': 1, 'b': 2, 'c': 3, '_lineno': 6} is greater than 2"]
 
-def test_bad_keywords():
-    assert count_exception_lines(keywords["schema"], keywords["bad"]) == 9
 
 
 def test_bad_anys():
