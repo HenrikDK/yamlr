@@ -96,7 +96,7 @@ def validate_subset(current_value, all_values, args = None, kw_args = None):
     valid = allow_empty or current_value is not None
     errors = []
     if not valid:
-        error = "subset may not be an empty set."
+        error = "'subset' may not be an empty set."
         errors.append(error)
     return errors
 
