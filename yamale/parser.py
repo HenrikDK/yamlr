@@ -40,10 +40,17 @@ def _extract_expression(call_node, validators):
         elif isinstance(base_arg, ast.Name) and base_arg.id in validators:
             continue
         elif isinstance(base_arg, ast.Call):
-            child = _extract_expression(base_arg, validators)
-            result['children'].append(child)
+            continue
         else:
             raise SyntaxError("Argument values must either be constant literals, or else " "reference other validators.")
+    
+    for arg in call_node.args:
+        base_arg = arg.operand if isinstance(arg, ast.UnaryOp) else arg
+        if not isinstance(base_arg, ast.Call):
+            continue
+        child = _extract_expression(base_arg, validators)
+        result['children'].append(child)
+
     return result
 
 
