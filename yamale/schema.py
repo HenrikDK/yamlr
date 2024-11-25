@@ -10,7 +10,7 @@ class FatalValidationError(Exception):
 # validate schema
 def validate(c_sch, data, data_name, strict):
     c_sch['data'] = data
-    print(f'V    - state: {c_sch.keys()} data: {data.keys()}')
+    print(f'V    - state: {c_sch.keys()}')
     path = util.get_path()
     try:
         errors = _validate(c_sch, c_sch['schema'], data, path, strict)
@@ -98,13 +98,15 @@ def _validate_static_map_list(c_sch, c_val, data, path, strict):
     return errors
 
 def _validate_map_list(c_sch, c_val, data, path, strict):
-    print(f'vml  - {c_val.keys()} - {data}')
+    print(f'vml  - {c_val} - {data}')
     errors = []
 
     if not c_val['children']:
         return errors  # No validators, user just wanted a map.
 
     for key in util.get_keys(data):
+        if key == '_lineno':
+            continue
         sub_errors = []
         for s_val in c_val['children']:
             err = _validate_item(c_sch, s_val, data, path, strict, key)
