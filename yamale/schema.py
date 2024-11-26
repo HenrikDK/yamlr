@@ -55,7 +55,7 @@ def _validate(c_sch, c_val, data, path, strict):
 
 # Fetch item from data at the position key and validate with validator. Returns an array of errors.
 def _validate_item(c_sch, c_val, data, path, strict, key):
-    c_sch['log'].append(f"{'v-item':10} - {key} - {c_val}")
+    c_sch['log'].append(f"{'v-item':10} - {c_val} - {data}")
 
     errors = []
     path = util.get_path(path, key)
@@ -66,7 +66,10 @@ def _validate_item(c_sch, c_val, data, path, strict, key):
         required = True 
         if 'kw_args' in c_val:
             required = c_val['kw_args'].get('required', True)
-        
+            if 'allow_empty' in c_val['kw_args']:
+                allow_empty = c_val['kw_args'].get('allow_empty', False)
+                required = not allow_empty
+
         if 'name' in c_val and c_val['name'] in c_sch['validators'] and not required:
             return errors
         # SHUT DOWN EVERYTHING
@@ -166,6 +169,10 @@ def _validate_subset(c_sch, c_val, data, path, strict):
     c_sch['log'].append(f"{'v-sub':10} - {c_val} - {data}")
 
     def _internal_validate(internal_data):
+        allow_empty = bool(c_val['kw_args'].get("allow_empty", False))
+        if allow_empty and data is None:
+            return []
+
         validators = _get_include_validators_for_key(c_sch, c_val, internal_data)
         sub_errors = []
         for s_val in validators:
