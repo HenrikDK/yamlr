@@ -76,7 +76,7 @@ def _validate_item(c_sch, c_val, data, path, strict, key):
     return _validate(c_sch, c_val, data_item, path, strict)
 
 def _validate_static_map_list(c_sch, c_val, data, path, strict):
-    c_sch['log'].append(f"{'v-sml':10} - {c_val} - {data}")
+    c_sch['log'].append(f"{'v-sml':10} - {c_val} - {data} - {strict}")
     
     if util.is_map(c_val) and not util.is_map(data):
         return ["%s : '%s' is not a map" % (path, data)]
@@ -89,7 +89,8 @@ def _validate_static_map_list(c_sch, c_val, data, path, strict):
     if strict:
         data_keys = set(util.get_keys(data))
         validator_keys = set(util.get_keys(c_val))
-        for key in data_keys - validator_keys:
+        diff_keys = data_keys - validator_keys
+        for key in diff_keys:
             if key == '_lineno':
                 continue
             error_path = util.get_path(path, key)
@@ -100,14 +101,14 @@ def _validate_static_map_list(c_sch, c_val, data, path, strict):
     
     c_sch['log'].append(f"{'v-sml - e':10} - {errors}")
     return errors
-
+        
 def _validate_map_list(c_sch, c_val, data, path, strict):
     c_sch['log'].append(f"{'v-ml':10} - {c_val} - {data}")
     
     errors = []
 
     if not c_val['children']:
-        return errors  # No validators, user just wanted a map.
+        return errors # No validators, user just wanted a map.
 
     for key in util.get_keys(data):
         if key == '_lineno':
@@ -136,6 +137,7 @@ def _validate_include(c_sch, c_val, data, path, strict):
     if not include_schema:
         raise FatalValidationError("Include '%s' has not been defined." % include_name)
     
+    c_sch['log'].append(f"{'v-inc - s':10} - {include_name} - {include_schema}")
     return _validate(c_sch, include_schema, data, path, strict)
 
 def _validate_any(c_sch, c_val, data, path, strict):
@@ -213,6 +215,7 @@ def _get_include_validators_for_key(c_sch, c_val, internal_data):
         if len(errors) == 0:
             result.append(s_val)
     
+    c_sch['log'].append(f"{'v-ivfk - r':10} - {result}")
     return result
 
 def _validate_primitive(c_sch, c_val, data, path):
