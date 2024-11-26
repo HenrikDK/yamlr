@@ -166,8 +166,8 @@ def _validate_subset(c_sch, c_val, data, path, strict):
     def _internal_validate(internal_data):
         validators = _get_include_validators_for_key(c_sch, c_val, internal_data)
         sub_errors = []
-        for v in validators:
-            err = _validate(v, internal_data, path, strict)
+        for s_val in validators:
+            err = _validate(c_sch, s_val, internal_data, path, strict)
             if not err:
                 break
             sub_errors += err
