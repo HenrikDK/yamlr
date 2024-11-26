@@ -129,7 +129,7 @@ def _validate_map_list(c_sch, c_val, data, path, strict):
 def _validate_include(c_sch, c_val, data, path, strict):
     c_sch['log'].append(f"{'v-inc':10} - {c_val} - {data}")
     
-    strict = c_val['kw_args'].get('strict', False)
+    strict = c_val['kw_args'].get('strict', True)
     include_name = c_val['args'][0]
     include_schema = c_sch['includes'].get(include_name)
     
