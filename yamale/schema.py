@@ -183,6 +183,8 @@ def _validate_subset(c_sch, c_val, data, path, strict):
     errors = []
     if util.is_map(data):
         for k, v in data.items():
+            if k == '_lineno':
+                continue
             errors += _internal_validate({k: v})
     elif util.is_list(data):
         for k in data:
