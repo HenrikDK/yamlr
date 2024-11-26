@@ -8,7 +8,10 @@ from yamale import validators as val
 def validate_min(c_sch, c_val, value):
     errors = []
     min = c_val['kw_args']['min']
-
+    if isinstance(value, int) and not isinstance(min, int):
+        min = int(min)
+    if isinstance(value, float) and not isinstance(min, float):
+        min = float(min)
     if isinstance(value, datetime) and not isinstance(min, datetime):
         min = util.convert_to_datetime(min)
     elif isinstance(value, date) and not isinstance(min, date):
@@ -24,6 +27,10 @@ def validate_max(c_sch, c_val, value):
     errors = []
     max = c_val['kw_args']['max']
 
+    if isinstance(value, int) and not isinstance(max, int):
+        max = int(max)
+    if isinstance(value, float) and not isinstance(max, float):
+        max = float(max)
     if isinstance(value, datetime) and not isinstance(max, datetime):
         max = util.convert_to_datetime(max)
     elif isinstance(value, date) and not isinstance(max, date):
