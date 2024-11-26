@@ -1,12 +1,11 @@
 import io
 import pytest
 from yamale import readers as yaml_reader
-from tests import get_fixture
 
 parsers = ["pyyaml", "PyYAML"]
-TYPES = get_fixture("types.yaml")
-NESTED = get_fixture("nested.yaml")
-KEYWORDS = get_fixture("keywords.yaml")
+TYPES = "tests/fixtures/types.yaml"
+NESTED = "tests/fixtures/nested.yaml"
+KEYWORDS = "tests/fixtures/keywords.yaml"
 
 
 @pytest.mark.parametrize("parser", parsers)
