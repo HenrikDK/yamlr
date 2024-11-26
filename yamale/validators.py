@@ -88,12 +88,12 @@ def validate_any(c_sch, c_val, value):
     return []
 
 def validate_subset(c_sch, c_val, value):
-    allow_empty = bool(c_val['kw_args'].get("allow_empty", False))
     validators = [val for val in c_val['children'] if isinstance(val, dict) and 'name' in val]
     if len(validators) == 0:
         raise ValueError("subset requires at least one validator!")
 
     c_sch['log'].append(f"{'vs':10} - {value}")
+    allow_empty = bool(c_val['kw_args'].get("allow_empty", False))
     valid = allow_empty or value is not None
     errors = []
     if not valid:
