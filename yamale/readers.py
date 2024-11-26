@@ -34,13 +34,14 @@ def parse_yaml(path=None, content=None, type='schema'):
 """
 Go through a schema and map validators.
 """
-def process_schema(raw_schema, name="", validators=[], constraints=[], includes={}):
+def process_schema(raw_schema, name="", validators=[], constraints=[], includes={}, debug=False):
     result = {
         'validators': validators or val.default,
         'constraints': constraints or con.default,
         'raw_schema': raw_schema,
         'name': name,
         'includes': includes,
+        'debug': debug,
         'log': []
     }
 

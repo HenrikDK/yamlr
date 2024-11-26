@@ -7,7 +7,7 @@ class YamaleError(ValueError):
         self.results = results
 
 
-def make_schema(path=None, validators=None, content=None, constraints=None):
+def make_schema(path=None, validators=None, content=None, constraints=None, debug=False):
     # validators = None means use default.
     raw_schema = readers.parse_yaml(path=path, content=content, type='schema')
     if not raw_schema:
@@ -15,7 +15,7 @@ def make_schema(path=None, validators=None, content=None, constraints=None):
 
     # First document is the base schema
     try:
-        s = readers.process_schema(raw_schema, path, validators=validators, constraints=constraints)
+        s = readers.process_schema(raw_schema, path, validators=validators, constraints=constraints, debug=debug)
     except (TypeError, SyntaxError) as e:
         error = "Schema error in file %s\n" % path
         error += str(e)
@@ -38,6 +38,12 @@ def validate(c_sch, data, strict=True, _raise_error=True):
         result = schema.validate(c_sch, d, path, strict)
         results.append(result)
         is_valid = is_valid and result.isValid()
+    
+    if c_sch['debug']:
+        print(' --- Debug log --- ')
+        for l in c_sch['log']:
+            print(l)
+
     if _raise_error and not is_valid:
         raise YamaleError(results)
     return results
