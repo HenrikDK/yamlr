@@ -139,20 +139,17 @@ def test_nested_schema():
     assert isinstance(nested_schema["list"], (list, tuple))
     assert nested_schema["list"][0]['name'] == 'str'
 
-"""
 @pytest.mark.parametrize("data_map", test_data)
 def test_good(data_map):
+    for k in data_map.keys():
 
-    for key in d.keys():
-        if key == "schema":
-            d[key] = yamale.make_schema(get_fixture(d[key]))
-        else:
-            d[key] = yamale.make_data(get_fixture(d[key]))
+        if not k.startswith("good"):
+            continue
+        print()
+        schema = yamale.make_schema(get_fixture(data_map['schema']), debug=True)
+        data = yamale.make_data(get_fixture(data_map[k]))
 
-    for k, good_data in data_map.items():
-        if k.startswith("good"):
-            yamale.validate(data_map["schema"], good_data)
-"""
+        yamale.validate(schema, data)
 
 def test_bad_validate():
     assert count_exception_lines(types["schema"], types["bad"]) == 9
@@ -277,22 +274,22 @@ def test_bad_subset():
     exp = ["subset_list: 'subset' may not be an empty set."]
     match_exception_lines(subset["schema"], subset["bad"], exp)
 
-
-"""
-
 def test_bad_subset2():
-    exp = ["subset_list: '[1]' is not a int.", "subset_list: '[1]' is not a str."]
+    exp = ["subset_list: '[1]' is not an int.", "subset_list: '[1]' is not a str."]
     match_exception_lines(subset["schema"], subset["bad2"], exp)
 
 def test_bad_subset3():
-    exp = ["subset_list: '{'a': 1}' is not a int.", "subset_list: '{'a': 1}' is not a str."]
+    exp = ["subset_list: '{'a': 1}' is not an int.", "subset_list: '{'a': 1}' is not a str."]
     match_exception_lines(subset["schema"], subset["bad3"], exp)
 
 def test_nodef_subset_schema():
     with pytest.raises(ValueError) as e:
-        yamale.make_schema(get_fixture(subset_nodef["schema"]))
+        schema = yamale.make_schema(get_fixture(subset_nodef["schema"]), debug=True)
+        data = yamale.make_data(get_fixture(subset_nodef["schema"]))
+        yamale.validate(schema, data)
 
-    assert "'subset' requires at least one validator!" in str(e.value)
+    assert "subset requires at least one validator!" in str(e.value)
+
 
 @pytest.mark.parametrize(
     "use_schema_string,use_data_string,expected_message_re",
@@ -321,10 +318,9 @@ def test_validate_errors(use_schema_string, use_data_string, expected_message_re
     assert re.match(expected_message_re, excinfo.value.message, re.MULTILINE), "Message {} should match {}".format(
         excinfo.value.message, expected_message_re
     )
-"""
 
 def match_exception_lines(schema, data, expected, strict=False):
-    c_sch = yamale.make_schema(get_fixture(schema))
+    c_sch = yamale.make_schema(get_fixture(schema), debug=True)
     c_data = yamale.make_data(get_fixture(data))
 
     with pytest.raises(ValueError) as e:
