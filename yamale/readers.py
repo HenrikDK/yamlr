@@ -1,4 +1,4 @@
-import yaml, json
+import yaml
 from io import StringIO
 from yamale import util, parser
 from yamale import validators as val
@@ -7,7 +7,7 @@ from yaml.loader import SafeLoader
 
 class SafeLineLoader(SafeLoader):
     def construct_mapping(self, node, deep=False):
-        mapping = super(SafeLineLoader, self).construct_mapping(node, deep=deep)
+        mapping = super(SafeLoader, self).construct_mapping(node, deep=deep)
         # Add 1 so line numbering starts at 1
         mapping['_lineno'] = node.start_mark.line + 1
         return mapping
@@ -45,7 +45,7 @@ def process_schema(raw_schema, name="", validators=[], constraints=[], includes=
         'log': []
     }
 
-    schemas = json.loads(json.dumps(raw_schema))
+    schemas = raw_schema.copy()
 
     result['schema'] = _process_schema('', schemas[0], validators)
 

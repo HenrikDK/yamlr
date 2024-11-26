@@ -1,5 +1,4 @@
 import re
-import json
 import ipaddress
 from datetime import date, datetime
 from yamale import util
@@ -47,7 +46,7 @@ def validate_length_min(c_sch, c_val, value):
     min = int(c_val['kw_args']['min'])
     c_value = value
     if isinstance(value, dict):
-        c_value = json.loads(json.dumps(value))
+        c_value = value.copy()
         c_value.pop('_lineno', None)
 
     valid = min <= len(c_value)
