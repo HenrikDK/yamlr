@@ -2,6 +2,9 @@ from collections.abc import Mapping, Sequence
 import datetime
 
 def get_path(path = '', key=''):
+    if key == None:
+        return path
+    
     if isinstance(key, int):
         if len(path) == 0:
             return f'{key}'
