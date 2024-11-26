@@ -9,7 +9,7 @@ class FatalValidationError(Exception):
 
 # validate schema
 def validate(c_sch, data, data_name, strict):
-    c_sch['log'].append(f"{'V':10} - state: {c_sch.keys()}")
+    c_sch['log'].append(f"{'s-V':10} - state: {c_sch.keys()}")
 
     path = util.get_path()
     try:
@@ -20,7 +20,7 @@ def validate(c_sch, data, data_name, strict):
 
 # Validate data with validator, returns an array of errors.
 def _validate(c_sch, c_val, data, path, strict):
-    c_sch['log'].append(f"{'v':10} - {c_val} - {data}")
+    c_sch['log'].append(f"{'s-v':10} - {c_val} - {data}")
 
     if (util.is_list(c_val) or util.is_map(c_val)) and '_type' not in c_val: # does not work, since we now use dicts for everything
         return _validate_static_map_list(c_sch, c_val, data, path, strict)
@@ -34,7 +34,7 @@ def _validate(c_sch, c_val, data, path, strict):
         return errors
 
     errors += _validate_primitive(c_sch, c_val, data, path)
-    c_sch['log'].append(f"{'v - e':10} - {errors}")
+    c_sch['log'].append(f"{'s-v|e':10} - {errors}")
 
     if errors:
         return errors
@@ -55,7 +55,7 @@ def _validate(c_sch, c_val, data, path, strict):
 
 # Fetch item from data at the position key and validate with validator. Returns an array of errors.
 def _validate_item(c_sch, c_val, data, path, strict, key):
-    c_sch['log'].append(f"{'v-item':10} - {c_val} - {data}")
+    c_sch['log'].append(f"{'s-vitem':10} - {c_val} - {data}")
 
     errors = []
     path = util.get_path(path, key)
@@ -79,7 +79,7 @@ def _validate_item(c_sch, c_val, data, path, strict, key):
     return _validate(c_sch, c_val, data_item, path, strict)
 
 def _validate_static_map_list(c_sch, c_val, data, path, strict):
-    c_sch['log'].append(f"{'v-sml':10} - {c_val} - {data} - {strict}")
+    c_sch['log'].append(f"{'s-vsml':10} - {c_val} - {data} - {strict}")
     
     if util.is_map(c_val) and not util.is_map(data):
         return ["%s : '%s' is not a map" % (path, data)]
@@ -102,11 +102,11 @@ def _validate_static_map_list(c_sch, c_val, data, path, strict):
     for key, s_val in util.get_iter(c_val):
         errors += _validate_item(c_sch, s_val, data, path, strict, key)
     
-    c_sch['log'].append(f"{'v-sml - e':10} - {errors}")
+    c_sch['log'].append(f"{'s-vsml|e':10} - {errors}")
     return errors
         
 def _validate_map_list(c_sch, c_val, data, path, strict):
-    c_sch['log'].append(f"{'v-ml':10} - {c_val} - {data}")
+    c_sch['log'].append(f"{'s-vml':10} - {c_val} - {data}")
     
     errors = []
 
@@ -128,10 +128,11 @@ def _validate_map_list(c_sch, c_val, data, path, strict):
             for err in sub_errors:
                 errors += err
 
+    c_sch['log'].append(f"{'s-vml|e':10} - {errors}")
     return errors
 
 def _validate_include(c_sch, c_val, data, path, strict):
-    c_sch['log'].append(f"{'v-inc':10} - {c_val} - {data}")
+    c_sch['log'].append(f"{'s-vinc':10} - {c_val} - {data}")
     
     strict = c_val['kw_args'].get('strict', True)
     include_name = c_val['args'][0]
@@ -140,11 +141,11 @@ def _validate_include(c_sch, c_val, data, path, strict):
     if not include_schema:
         raise FatalValidationError("Include '%s' has not been defined." % include_name)
     
-    c_sch['log'].append(f"{'v-inc - s':10} - {include_name} - {include_schema}")
+    c_sch['log'].append(f"{'s-vinc|s':10} - {include_name} - {include_schema}")
     return _validate(c_sch, include_schema, data, path, strict)
 
 def _validate_any(c_sch, c_val, data, path, strict):
-    c_sch['log'].append(f"{'v-any':10} - {c_val} - {data}")
+    c_sch['log'].append(f"{'s-vany':10} - {c_val} - {data}")
     
     if len(c_val['children']) == 0:
         return []
@@ -163,10 +164,11 @@ def _validate_any(c_sch, c_val, data, path, strict):
         for err in sub_errors:
             errors += err
 
+    c_sch['log'].append(f"{'s-vany|e':10} - {errors}")
     return errors
 
 def _validate_subset(c_sch, c_val, data, path, strict):
-    c_sch['log'].append(f"{'v-sub':10} - {c_val} - {data}")
+    c_sch['log'].append(f"{'s-vsub':10} - {c_val} - {data}")
 
     def _internal_validate(internal_data):
         allow_empty = bool(c_val['kw_args'].get("allow_empty", False))
@@ -198,10 +200,12 @@ def _validate_subset(c_sch, c_val, data, path, strict):
             errors += _internal_validate(k)
     else:
         errors += _internal_validate(data)
+    
+    c_sch['log'].append(f"{'s-vsub|e':10} - {errors}")
     return errors
 
 def _get_include_validators_for_key(c_sch, c_val, internal_data):
-    c_sch['log'].append(f"{'v-ivfk':10} - {c_val} - {internal_data}")
+    c_sch['log'].append(f"{'s-givfk':10} - {c_val} - {internal_data}")
 
     key = c_val['kw_args'].get('key', None)
 
@@ -224,14 +228,15 @@ def _get_include_validators_for_key(c_sch, c_val, internal_data):
         if len(errors) == 0:
             result.append(s_val)
     
-    c_sch['log'].append(f"{'v-ivfk - r':10} - {result}")
+    c_sch['log'].append(f"{'s-givfk|r':10} - {result}")
     return result
 
 def _validate_primitive(c_sch, c_val, data, path):
-    c_sch['log'].append(f"{'v-p':10} - {c_val} - {data}")
+    c_sch['log'].append(f"{'s-vp':10} - {c_val} - {data}")
 
     errors = val.validate(c_sch, c_val, data)
     for i, error in enumerate(errors):
         errors[i] = ("%s: " % path) + error
 
+    c_sch['log'].append(f"{'s-vp|e':10} - {errors}")
     return errors

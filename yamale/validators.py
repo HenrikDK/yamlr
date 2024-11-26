@@ -192,14 +192,12 @@ def validate(c_sch, c_val, value):
     validator_name = c_val['name']
     validator = c_sch['validators'][validator_name]
 
-    args = c_val['args']
-    kw_args = c_val['kw_args']
     errors = []
-    c_sch['log'].append(f"{'vv':10} - {validator_name} - {value} - {args} - {kw_args}")
+    c_sch['log'].append(f"{'v-v':10} - {validator_name} - {value} - {c_val}")
 
     # Make sure the type validates first.
     errors = validator['func'](c_sch, c_val, value)
-    c_sch['log'].append(f"{'vv - e':10} - {errors}")
+    c_sch['log'].append(f"{'v-v|e':10} - {errors}")
     
     if len(errors) > 0:
         # todo: return line number, and message
@@ -209,7 +207,7 @@ def validate(c_sch, c_val, value):
     for c_name in validator['constraints']:
         constraint = c_sch['constraints'][c_name]
         
-        if constraint['field'] not in kw_args:
+        if constraint['field'] not in c_val['kw_args']:
             continue
 
         error = constraint['func'](c_sch, c_val, value)
