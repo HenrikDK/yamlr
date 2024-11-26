@@ -1,90 +1,50 @@
-"""import re
+import re
 import os
-from tests.yamale_testcase import YamaleTestCase
-#from yamale.wak_validators import DefaultValidators, Validator
+import pytest
+from yamale import YamaleError
+import yamale
 
+def test_all_yaml():
+    schema = yamale.make_schema("tests/fixtures/meta_test/schema.yaml", debug=True)
+    data = yamale.make_data("tests/fixtures/meta_test/data1.yaml")
+    yamale.validate(schema, data)
 
-data_folder = os.path.dirname(os.path.realpath(__file__))
+@pytest.mark.parametrize(
+    "data_filename", ["data1.yaml", "data2.yaml", "data3.yaml", "data4.yaml"]
+)
+def test_bad_yaml(data_filename):
+    with pytest.raises(YamaleError) as excinfo:
+        schema = yamale.make_schema("tests/fixtures/meta_test/schema_bad.yaml")
+        data = yamale.make_data(f"tests/fixtures/meta_test/{data_filename}")
+        yamale.validate(schema, data)
+    
+    assert len(str(excinfo.value)) > 0
 
+@pytest.mark.parametrize(
+    "data_filename", ["data1.yaml", "some_data.yaml"]
+)
+def test_map_yaml(data_filename):
+    schema = yamale.make_schema("tests/fixtures/meta_test/schema.yaml")
+    data = yamale.make_data(f"tests/fixtures/meta_test/{data_filename}")
+    yamale.validate(schema, data)
 
-class TestAllYaml(YamaleTestCase):
-    base_dir = "tests/fixtures/"
-    schema = "meta_test/schema.yaml"
-    yaml = "meta_test/data1.yaml"
+def test_schema_doesnt_validate_it_self():
+    with pytest.raises(YamaleError) as excinfo:
+        schema = yamale.make_schema("tests/fixtures/meta_test/schema.yaml")
+        data = yamale.make_data(f"tests/fixtures/meta_test/schema.yaml")
+        yamale.validate(schema, data)
+    
+    assert len(str(excinfo.value)) > 0
 
-    def runTest(self):
-        self.assertTrue(self.validate())
+def test_bad_required_yaml():
+    with pytest.raises(YamaleError) as excinfo:
+        schema = yamale.make_schema("tests/fixtures/meta_test/schema_required_bad.yaml")
+        data = yamale.make_data(f"tests/fixtures/meta_test/data_required_bad.yaml")
+        yamale.validate(schema, data)
+    
+    assert len(str(excinfo.value)) > 0
 
-
-class TestBadYaml(YamaleTestCase):
-    base_dir = "tests/fixtures/"
-    schema = "meta_test/schema_bad.yaml"
-    yaml = "meta_test/data*.yaml"
-
-    def runTest(self):
-        self.assertRaises(ValueError, self.validate)
-
-
-class TestMapYaml(YamaleTestCase):
-    base_dir = "tests/fixtures/"
-    schema = "meta_test/schema.yaml"
-    yaml = [
-        "meta_test/data1.yaml",
-        "meta_test/some_data.yaml",
-        # Make sure  schema doesn't validate itself
-        "meta_test/schema.yaml",
-    ]
-
-    def runTest(self):
-        self.assertTrue(self.validate())
-
-
-class Card(Validator):
-    #Custom validator for testing purpose
-
-    tag = "card"
-    card_regex = re.compile(r"^(10|[2-9JQKA])[SHDC]$")
-
-    def _is_valid(self, value):
-        return re.match(self.card_regex, value)
-
-
-class TestCustomValidator(YamaleTestCase):
-    base_dir = "tests/fixtures/"
-    schema = "meta_test/schema_custom.yaml"
-    yaml = "meta_test/data_custom.yaml"
-
-    def runTest(self):
-        validators = DefaultValidators.copy()
-        validators["card"] = Card
-        self.assertTrue(self.validate(validators))
-
-
-class TestCustomValidatorWithIncludes(YamaleTestCase):
-    base_dir = "tests/fixtures/"
-    schema = "meta_test/schema_custom_with_include.yaml"
-    yaml = "meta_test/data_custom_with_include.yaml"
-
-    def runTest(self):
-        validators = DefaultValidators.copy()
-        validators["card"] = Card
-        self.assertTrue(self.validate(validators))
-
-
-class TestBadRequiredYaml(YamaleTestCase):
-    base_dir = "tests/fixtures/"
-    schema = "meta_test/schema_required_bad.yaml"
-    yaml = "meta_test/data_required_bad.yaml"
-
-    def runTest(self):
-        self.assertRaises(ValueError, self.validate)
-
-
-class TestGoodRequiredYaml(YamaleTestCase):
-    base_dir = "tests/fixtures/"
-    schema = "meta_test/schema_required_good.yaml"
-    yaml = "meta_test/data_required_good.yaml"
-
-    def runTest(self):
-        self.assertTrue(self.validate())
-"""
+def test_good_required_yaml():
+    schema = yamale.make_schema("tests/fixtures/meta_test/schema_required_good.yaml")
+    data = yamale.make_data(f"tests/fixtures/meta_test/data_required_good.yaml")
+    yamale.validate(schema, data)
