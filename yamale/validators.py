@@ -93,7 +93,7 @@ def validate_subset(c_sch, c_val, value):
     if len(validators) == 0:
         raise ValueError("subset requires at least one validator!")
 
-    print(f'vs - {value}')
+    c_sch['log'].append(f"{'vs':10} - {value}")
     valid = allow_empty or value is not None
     errors = []
     if not valid:
@@ -195,7 +195,7 @@ def validate(c_sch, c_val, value):
     args = c_val['args']
     kw_args = c_val['kw_args']
     errors = []
-    c_sch['log'].append(f"{'vv':10} - {value} - {args} - {kw_args}")
+    c_sch['log'].append(f"{'vv':10} - {validator_name} - {value} - {args} - {kw_args}")
 
     # Make sure the type validates first.
     errors = validator['func'](c_sch, c_val, value)
