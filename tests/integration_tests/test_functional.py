@@ -326,7 +326,7 @@ def match_exception_lines(schema, data, expected, strict=False):
     with pytest.raises(ValueError) as e:
         yamale.validate(c_sch, c_data, strict)
 
-    got = e.value.results[0].errors
+    got = e.value.results[0]['errors']
     got.sort()
     expected.sort()
     assert got == expected
@@ -341,4 +341,4 @@ def count_exception_lines(schema, data, strict=False):
     
     print('value: ' + repr(e.value.results))
     result = e.value.results[0]
-    return len(result.errors)
+    return len(result['errors'])

@@ -21,7 +21,7 @@ def test_keyed_subset_with_include_should_succeed():
     result = yamale.validate(schema, data)
 
     for r in result:
-        assert r.isValid()
+        assert r['is_valid']
 
 def test_keyed_any_with_include_should_fail_with_correct_message():
     valid_msg = "deploy.branch: Unexpected element"
@@ -41,4 +41,4 @@ def test_keyed_any_with_include_should_succeed():
     result = yamale.validate(schema, data)
 
     for r in result:
-        assert r.isValid()
+        assert r['is_valid']
