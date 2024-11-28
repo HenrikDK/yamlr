@@ -16,7 +16,7 @@ def validate(c_sch, data, data_name, strict):
         errors = _validate(c_sch, c_sch['schema'], data, path, strict)
     except FatalValidationError as e:
         errors = [e.error]
-    return ValidationResult(data_name, c_sch['name'], errors)
+    return errors
 
 # Validate data with validator, returns an array of errors.
 def _validate(c_sch, c_val, data, path, strict):
@@ -55,7 +55,7 @@ def _validate(c_sch, c_val, data, path, strict):
 
 # Fetch item from data at the position key and validate with validator. Returns an array of errors.
 def _validate_item(c_sch, c_val, data, path, strict, key):
-    c_sch['log'].append(f"{'s-vitem':10} - {c_val} - {data}")
+    c_sch['log'].append(f"{'s-vit':10} - {c_val} - {data}")
 
     errors = []
     path = util.get_path(path, key)
