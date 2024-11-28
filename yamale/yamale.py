@@ -2,7 +2,7 @@ from yamale import schema, readers
 
 class YamaleError(ValueError):
     def __init__(self, results):
-        super(YamaleError, self).__init__("\n".join([str(x) for x in list(filter(lambda x: not x.isValid(), results))]))
+        super(YamaleError, self).__init__("\n".join([str(x) for x in list(results)]))
         self.message = self.args[0]
         self.results = results
 
@@ -37,7 +37,7 @@ def validate(c_sch, data, strict=True, _raise_error=True):
     for d, path in data:
         result = schema.validate(c_sch, d, path, strict)
         results.append(result)
-        is_valid = is_valid and result.isValid()
+        is_valid = is_valid and len(result['errors']) == 0
     
     if c_sch['debug']:
         print(' --- Debug log --- ')
