@@ -3,7 +3,6 @@ import glob
 import os
 from multiprocessing import Pool
 from yamale.yamale import YamaleError
-from yamale.validation_results import Result
 
 import yamale.yamale as yamale
 
@@ -17,7 +16,7 @@ def _validate(schema_path, data_path, strict, _raise_error):
             schema = yamale.make_schema(schema_path)
             schemas[schema_path] = schema
     except (SyntaxError, ValueError) as e:
-        results = [Result([str(e)])]
+        results = [[str(e)]]
         if not _raise_error:
             return results
         raise YamaleError(results)
@@ -80,7 +79,7 @@ def _validate_dir(root, schema_name, cpus, strict):
     print("Validating...")
     for r in res:
         sub_results = r.get(timeout=300)
-        error_messages.extend([str(sub_result) for sub_result in sub_results if not sub_result.isValid()])
+        error_messages.extend([str(sub_result['errors']) for sub_result in sub_results if not sub_result['is_valid']])
     pool.close()
     pool.join()
     if error_messages:
