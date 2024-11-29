@@ -1,45 +1,31 @@
 import re
 import os
 import pytest
-from yamale import YamaleError
+from yamale import validators as val
 import yamale
 
-def test_custom_validator():
-    schema = yamale.make_schema("tests/fixtures/meta_test/schema.yaml", debug=True)
-    data = yamale.make_data("tests/fixtures/meta_test/data1.yaml")
-    yamale.validate(schema, data)
-    assert False == True
-
-"""
-class Card(Validator):
-    #Custom validator for testing purpose
-
-    tag = "card"
+def validate_card(c_sch, c_val, value):
     card_regex = re.compile(r"^(10|[2-9JQKA])[SHDC]$")
+     
+    valid = re.match(card_regex, value)
+    errors = []
+    if not valid:
+        error = "'%s' is not a valid card." % (value)
+        errors.append(error)
+    return errors
 
-    def _is_valid(self, value):
-        return re.match(self.card_regex, value)
+def test_custom_validator():
+    validators = val.default.copy()
+    validators['card'] = {'func': validate_card, 'constraints': [], '_type': 'validator'}
 
+    schema = yamale.make_schema("tests/fixtures/meta_test/schema_custom.yaml", validators=validators, debug=True)
+    data = yamale.make_data("tests/fixtures/meta_test/data_custom.yaml")
+    yamale.validate(schema, data)
 
-class TestCustomValidator(YamaleTestCase):
-    base_dir = "tests/fixtures/"
-    schema = "meta_test/schema_custom.yaml"
-    yaml = "meta_test/data_custom.yaml"
+def test_custom_validator_with_include():
+    validators = val.default.copy()
+    validators['card'] = {'func': validate_card, 'constraints': [], '_type': 'validator'}
 
-    def runTest(self):
-        validators = DefaultValidators.copy()
-        validators["card"] = Card
-        self.assertTrue(self.validate(validators))
-
-
-class TestCustomValidatorWithIncludes(YamaleTestCase):
-    base_dir = "tests/fixtures/"
-    schema = "meta_test/schema_custom_with_include.yaml"
-    yaml = "meta_test/data_custom_with_include.yaml"
-
-    def runTest(self):
-        validators = DefaultValidators.copy()
-        validators["card"] = Card
-        self.assertTrue(self.validate(validators))
-
-"""
+    schema = yamale.make_schema("tests/fixtures/meta_test/schema_custom_with_include.yaml", validators=validators, debug=True)
+    data = yamale.make_data("tests/fixtures/meta_test/data_custom_with_include.yaml")
+    yamale.validate(schema, data)
