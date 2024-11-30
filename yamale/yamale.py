@@ -11,7 +11,7 @@ def make_schema(path=None, validators=None, content=None, constraints=None, debu
     # validators = None means use default.
     raw_schema = readers.parse_yaml(path=path, content=content, type='schema')
     if not raw_schema:
-        raise ValueError("{} is an empty file!".format(path))
+        raise ValueError({'error':"is an empty file!", 'path':path, 'lineno': None})
 
     # First document is the base schema
     try:
