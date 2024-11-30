@@ -1,6 +1,16 @@
 from collections.abc import Mapping, Sequence
 import datetime
 
+def get_lineno(data, prev_lineno: None):
+    lineno = None
+    if isinstance(data, dict):
+        lineno = data.get('_lineno', None)
+    
+    if lineno == None and prev_lineno != None:
+        lineno = prev_lineno
+    
+    return lineno
+
 def get_path(path = '', key=''):
     if key == None:
         return path
