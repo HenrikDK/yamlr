@@ -75,7 +75,7 @@ def _validate_item(c_sch, c_val, data, path, strict, key, prev_lineno=None):
         if 'name' in c_val and c_val['name'] in c_sch['validators'] and not required:
             return errors
         # SHUT DOWN EVERYTHING
-        errors.append({'path': path, 'error': f"{path}: Required field missing", 'lineno': lineno})
+        errors.append({'path': path, 'error': f"Required field missing", 'lineno': lineno})
         return errors
 
     return _validate(c_sch, c_val, data_item, path, strict, lineno)
