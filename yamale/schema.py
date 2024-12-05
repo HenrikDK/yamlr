@@ -124,8 +124,7 @@ def _validate_map_list(c_sch, c_val, data, path, strict, prev_lineno=None):
         for s_val in c_val['children']:
             err = _validate_item(c_sch, s_val, data, path, strict, key)
             if err:
-                {'error': err, 'path': path, 'lineno': lineno}
-                sub_errors.append(err)
+                sub_errors.extend(err)
 
         if len(sub_errors) == len(c_val['children']): # All validators failed, add to errors
             errors.extend(sub_errors)
@@ -239,9 +238,8 @@ def _validate_primitive(c_sch, c_val, data, path, prev_lineno):
     c_sch['log'].append(f"{'s-vp':10} - {c_val} - {data}")
 
     lineno = util.get_lineno(data, prev_lineno)
-    errors = val.validate(c_sch, c_val, data, lineno)
-#    for i, error in enumerate(errors):
-#        errors[i] = ("%s: " % path) + error
+    errors = val.validate(c_sch, c_val, data)
+    errors = [{'error': e, 'path': path, 'lineno': lineno} for e in errors]
 
     c_sch['log'].append(f"{'s-vp|e':10} - {errors}")
     return errors
