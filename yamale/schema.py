@@ -152,12 +152,12 @@ def _validate_any(c_sch, c_val, data, path, strict, prev_lineno=None):
     if len(c_val['children']) == 0:
         return []
 
+    lineno = util.get_lineno(data, prev_lineno)
     errors = []
-
     validators = _get_include_validators_for_key(c_sch, c_val, data)
     sub_errors = []
     for s_val in validators:
-        err = _validate(c_sch, s_val, data, path, strict)
+        err = _validate(c_sch, s_val, data, path, strict, lineno)
         if err:
             sub_errors.append(err)
 
