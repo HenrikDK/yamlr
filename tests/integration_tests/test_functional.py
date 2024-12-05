@@ -159,15 +159,16 @@ def test_bad_nested():
 
 def test_bad_nested_issue_54():
     exp = [
-        "string: Required field missing",
-        "number: Required field missing",
-        "integer: Required field missing",
-        "boolean: Required field missing",
-        "date: Required field missing",
-        "datetime: Required field missing",
-        "nest: Required field missing",
-        "list: Required field missing",
+        "Required field missing",
+        "Required field missing",
+        "Required field missing",
+        "Required field missing",
+        "Required field missing",
+        "Required field missing",
+        "Required field missing",
+        "Required field missing",
     ]
+    paths = ['string', 'number', 'integer', 'boolean', 'date', 'datetime', 'nest', 'list']
     match_exception_lines(nested_issue_54["schema"], nested_issue_54["bad"], exp)
 
 def test_bad_custom():
@@ -201,8 +202,9 @@ def test_bad_regexes():
     assert count_exception_lines(regexes["schema"], regexes["bad"]) == 4
 
 def test_bad_include_validator():
-    exp = ["key1: 'a_string' is not an int."]
-    match_exception_lines(include_validator["schema"], include_validator["bad"], exp)
+    exp = ["'a_string' is not an int."]
+    paths = ['key1']
+    match_exception_lines(include_validator["schema"], include_validator["bad"], exp, paths)
 
 def test_bad_schema():
     with pytest.raises(SyntaxError) as excinfo:
@@ -210,9 +212,11 @@ def test_bad_schema():
     assert "fixtures/bad_schema.yaml" in str(excinfo.value)
 
 def test_empty_schema():
-    with pytest.raises(ValueError) as excinfo:
+    with pytest.raises(ValueError) as e:
         yamale.make_schema(get_fixture("empty_schema.yaml"))
-    assert "empty_schema.yaml is an empty file!" in str(excinfo.value)
+    
+    assert 'empty_schema.yaml' in e.value.args[0]['path']
+    assert e.value.args[0]['error'] == "is an empty file!"
 
 @pytest.mark.parametrize(
     "schema_filename", ["bad_schema_rce.yaml", "bad_schema_rce2.yaml", "bad_schema_rce3.yaml", "bad_schema_rce4.yaml"]
@@ -223,64 +227,75 @@ def test_vulnerable_schema(schema_filename):
     assert schema_filename in str(excinfo.value)
 
 def test_list_is_not_a_map():
-    exp = [" : '[1, 2]' is not a map"]
+    exp = ["[1, 2] is not a map"]
     match_exception_lines(strict_map["schema"], strict_list["good"], exp)
 
 def test_bad_strict_map():
-    exp = ["extra: Unexpected element"]
-    match_exception_lines(strict_map["schema"], strict_map["bad"], exp, strict=True)
+    exp = ["Unexpected element"]
+    paths = ['extra']
+    match_exception_lines(strict_map["schema"], strict_map["bad"], exp, paths, strict=True)
 
 def test_bad_mixed_strict_map():
-    exp = ["field3.extra: Unexpected element"]
-    match_exception_lines(mixed_strict_map["schema"], mixed_strict_map["bad"], exp)
+    exp = ["Unexpected element"]
+    paths = ['field3.extra']
+    match_exception_lines(mixed_strict_map["schema"], mixed_strict_map["bad"], exp, paths)
 
 def test_bad_strict_list():
-    exp = ["2: Unexpected element"]
-    match_exception_lines(strict_list["schema"], strict_list["bad"], exp, strict=True)
+    exp = ["Unexpected element"]
+    paths = ['2']
+    match_exception_lines(strict_list["schema"], strict_list["bad"], exp, paths, strict=True)
 
 def test_bad_nested_map2():
-    exp = ["field1.field1_1: Required field missing"]
-    match_exception_lines(nested_map2["schema"], nested_map2["bad"], exp)
+    exp = ["Required field missing"]
+    paths = ['field1.field1_1']
+    match_exception_lines(nested_map2["schema"], nested_map2["bad"], exp, paths)
 
 def test_bad_static_list():
-    exp = ["0: Required field missing"]
-    match_exception_lines(static_list["schema"], static_list["bad"], exp)
+    exp = ["Required field missing"]
+    paths = ['0']
+    match_exception_lines(static_list["schema"], static_list["bad"], exp, paths)
 
 def test_bad_map_key_constraint_base():
-    exp = [": Key error - 'bad' is not an int."]
+    exp = ["Key error - 'bad' is not an int."]
     match_exception_lines(map_key_constraint["schema"], map_key_constraint["bad_base"], exp)
 
 def test_bad_map_key_constraint_nest():
-    exp = ["1.0: Key error - '100' is not a str."]
-    match_exception_lines(map_key_constraint["schema"], map_key_constraint["bad_nest"], exp)
+    exp = ["Key error - '100' is not a str."]
+    paths = ['1.0']
+    match_exception_lines(map_key_constraint["schema"], map_key_constraint["bad_nest"], exp, paths)
 
 def test_bad_map_key_constraint_nest_con():
     exp = [
-        "1.0: Key error - '100' is not a str.",
-        "1.0: Key error - 'baz' contains excluded character 'z'",
+        "Key error - '100' is not a str.",
+        "Key error - 'baz' contains excluded character 'z'",
     ]
-    match_exception_lines(map_key_constraint["schema"], map_key_constraint["bad_nest_con"], exp)
+    paths = ['1.0', '1.0']
+    match_exception_lines(map_key_constraint["schema"], map_key_constraint["bad_nest_con"], exp, paths)
 
 def test_bad_numeric_bool_coercion():
     exp = [
-        "integers.0: 'False' is not an int.",
-        "integers.1: 'True' is not an int.",
-        "numbers.0: 'False' is not a num.",
-        "numbers.1: 'True' is not a num.",
+        "'False' is not an int.",
+        "'True' is not an int.",
+        "'False' is not a num.",
+        "'True' is not a num.",
     ]
-    match_exception_lines(numeric_bool_coercion["schema"], numeric_bool_coercion["bad"], exp)
+    paths = ['integers.0', 'integers.1', 'numbers.0', 'numbers.1']
+    match_exception_lines(numeric_bool_coercion["schema"], numeric_bool_coercion["bad"], exp, paths)
 
 def test_bad_subset():
-    exp = ["subset_list: 'subset' may not be an empty set."]
-    match_exception_lines(subset["schema"], subset["bad"], exp)
+    exp = ["'subset' may not be an empty set."]
+    paths = ['subset_list']
+    match_exception_lines(subset["schema"], subset["bad"], exp, paths)
 
 def test_bad_subset2():
-    exp = ["subset_list: '[1]' is not an int.", "subset_list: '[1]' is not a str."]
-    match_exception_lines(subset["schema"], subset["bad2"], exp)
+    exp = ["'[1]' is not an int.", "'[1]' is not a str."]
+    paths = ['subset_list', 'subset_list']
+    match_exception_lines(subset["schema"], subset["bad2"], exp, paths)
 
 def test_bad_subset3():
-    exp = ["subset_list: '{'a': 1}' is not an int.", "subset_list: '{'a': 1}' is not a str."]
-    match_exception_lines(subset["schema"], subset["bad3"], exp)
+    exp = ["'{'a': 1}' is not an int.", "'{'a': 1}' is not a str."]
+    paths = ['subset_list', 'subset_list']
+    match_exception_lines(subset["schema"], subset["bad3"], exp, paths)
 
 def test_nodef_subset_schema():
     with pytest.raises(ValueError) as e:
@@ -321,7 +336,7 @@ def test_validate_errors(use_schema_string, use_data_string, expected_message_re
     )
 """
 
-def match_exception_lines(schema, data, expected, strict=False):
+def match_exception_lines(schema, data, expected=[], paths=[], strict=False):
     c_sch = yamale.make_schema(get_fixture(schema), debug=True)
     c_data = yamale.make_data(get_fixture(data))
 
@@ -329,10 +344,18 @@ def match_exception_lines(schema, data, expected, strict=False):
         yamale.validate(c_sch, c_data, strict)
 
     got = e.value.results[0]['errors']
-    result = [x['error'] for x in got]
-    result.sort()
-    expected.sort()
-    assert result == expected
+
+    if len(expected) > 0:
+        result_errors = [x['error'] for x in got]
+        result_errors.sort()
+        expected.sort()
+        assert result_errors == expected
+    
+    if len(paths) > 0:
+        result_paths = [x['path'] for x in got]
+        result_paths.sort()
+        paths.sort()
+        assert result_paths == paths
 
 
 def count_exception_lines(schema, data, strict=False):
