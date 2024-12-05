@@ -27,9 +27,9 @@ def test_bad_yaml(parser):
             1,
             parser,
         )
-    
-    assert "map.bad: '12.5' is not a str." in e.value.message
-
+    errors = e.value.results[0]['errors']
+    errors = [x for x in errors if x['error'] == "'12.5' is not a str." and x['path'] == "map.bad"]
+    assert len(errors) == 1
 
 @pytest.mark.parametrize("parser", parsers)
 def test_required_keys_yaml(parser):
@@ -40,8 +40,9 @@ def test_required_keys_yaml(parser):
             1,
             parser,
         )
-    assert "map.key: Required field missing" in e.value.message
-
+    errors = e.value.results[0]['errors']
+    errors = [x for x in errors if x['error'] == "Required field missing" and x['path'] == "map.key"]
+    assert len(errors) == 1
 
 @pytest.mark.parametrize("parser", parsers)
 def test_good_yaml(parser):
@@ -121,7 +122,9 @@ def test_bad_strict():
             4,
             strict=True,
         )
-    assert "map.key2: Unexpected element" in e.value.message
+    errors = e.value.results[0]['errors']
+    errors = [x for x in errors if x['error'] == "Unexpected element" and x['path'] == "map.key2"]
+    assert len(errors) == 1
 
 
 def test_bad_issue_54():
@@ -132,14 +135,16 @@ def test_bad_issue_54():
             4,
             strict=True,
         )
-    assert "string: Required field missing" in e.value.message
-    assert "number: Required field missing" in e.value.message
-    assert "integer: Required field missing" in e.value.message
-    assert "boolean: Required field missing" in e.value.message
-    assert "date: Required field missing" in e.value.message
-    assert "datetime: Required field missing" in e.value.message
-    assert "nest: Required field missing" in e.value.message
-    assert "list: Required field missing" in e.value.message
+    errors = e.value.results[0]['errors']
+    errors = [f"{x['path']}: {x['error']}" for x in errors]
+    assert "string: Required field missing" in errors
+    assert "number: Required field missing" in errors
+    assert "integer: Required field missing" in errors
+    assert "boolean: Required field missing" in errors
+    assert "date: Required field missing" in errors
+    assert "datetime: Required field missing" in errors
+    assert "nest: Required field missing" in errors
+    assert "list: Required field missing" in errors
 
 
 def test_nested_schema_issue_69():
