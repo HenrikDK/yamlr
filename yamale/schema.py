@@ -77,8 +77,10 @@ def _validate_item(c_sch, c_val, data, path, strict, key, prev_lineno=None):
         # SHUT DOWN EVERYTHING
         errors.append({'path': path, 'error': f"Required field missing", 'lineno': lineno})
         return errors
-
-    return _validate(c_sch, c_val, data_item, path, strict, lineno)
+    
+    errors = _validate(c_sch, c_val, data_item, path, strict, lineno)
+    c_sch['log'].append(f"{'s-vit|e':10} - {errors}")
+    return errors
 
 def _validate_static_map_list(c_sch, c_val, data, path, strict, prev_lineno=None):
     c_sch['log'].append(f"{'s-vsml':10} - {c_val} - {data} - {strict}")
@@ -122,11 +124,11 @@ def _validate_map_list(c_sch, c_val, data, path, strict, prev_lineno=None):
 
         sub_errors = []
         for s_val in c_val['children']:
-            err = _validate_item(c_sch, s_val, data, path, strict, key)
-            if err:
+            err = _validate_item(c_sch, s_val, data, path, strict, key, lineno)
+            if len(err) > 0:
                 sub_errors.extend(err)
 
-        if len(sub_errors) == len(c_val['children']): # All validators failed, add to errors
+        if len(sub_errors) >= len(c_val['children']): # All validators failed, add to errors
             errors.extend(sub_errors)
 
     c_sch['log'].append(f"{'s-vml|e':10} - {errors}")
