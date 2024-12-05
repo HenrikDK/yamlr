@@ -200,7 +200,6 @@ def validate(c_sch, c_val, value):
     c_sch['log'].append(f"{'v-v|e':10} - {errors}")
     
     if len(errors) > 0:
-        # todo: return line number, and message
         return errors
 
     # Then validate all the constraints second.
@@ -214,4 +213,5 @@ def validate(c_sch, c_val, value):
         if len(error) > 0:
             errors.extend(error)
     
+    c_sch['log'].append(f"{'v-v|e':10} - {errors}")
     return errors
