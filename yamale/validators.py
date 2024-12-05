@@ -188,7 +188,7 @@ default = {
     'semver': {'func': validate_semver, 'constraints': [], '_type': 'validator'}
 }
 
-def validate(c_sch, c_val, value, prev_lineno=None):
+def validate(c_sch, c_val, value):
     validator_name = c_val['name']
     validator = c_sch['validators'][validator_name]
 
