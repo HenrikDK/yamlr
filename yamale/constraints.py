@@ -58,9 +58,14 @@ def validate_length_min(c_sch, c_val, value):
 def validate_length_max(c_sch, c_val, value):
     errors = []
     max = int(c_val['kw_args']['max'])
-    valid = max >= len(value)
+    c_value = value
+    if isinstance(value, dict):
+        c_value = value.copy()
+        c_value.pop('_lineno', None)
+
+    valid = max >= len(c_value)
     if not valid:
-        message = "Length of %s is greater than %s" % (value, max)
+        message = "Length of %s is greater than %s" % (c_value, max)
         errors.append(message)
     return errors
 
