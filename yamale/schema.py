@@ -86,10 +86,10 @@ def _validate_static_map_list(c_sch, c_val, data, path, strict, prev_lineno=None
     c_sch['log'].append(f"{'s-vsml':10} - {c_val} - {data} - {strict}")
     
     if util.is_map(c_val) and not util.is_map(data):
-        return [{'error': f"{data}: is not a map", 'path': path, 'lineno': None}]
+        return [{'error': f"{data} is not a map", 'path': path, 'lineno': None}]
 
     if util.is_list(c_val) and not util.is_list(data):
-        return [{'error': f"{data}: is not a list", 'path': path, 'lineno': None}]
+        return [{'error': f"{data} is not a list", 'path': path, 'lineno': None}]
 
     errors = []
     lineno = util.get_lineno(data, prev_lineno)
