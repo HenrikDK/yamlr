@@ -329,9 +329,10 @@ def match_exception_lines(schema, data, expected, strict=False):
         yamale.validate(c_sch, c_data, strict)
 
     got = e.value.results[0]['errors']
-    got.sort()
+    result = [x['error'] for x in got]
+    result.sort()
     expected.sort()
-    assert got == expected
+    assert result == expected
 
 
 def count_exception_lines(schema, data, strict=False):
