@@ -23,6 +23,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Print Environment
+        shell: bash
+        run: env
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
