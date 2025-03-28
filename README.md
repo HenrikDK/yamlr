@@ -51,7 +51,7 @@ care of reading and parsing your YAML files.
 
 All you need to do is supply the files' path:
 ```python
-# Import Yamale and make a schema object:
+# Import Yamlr and make a schema object:
 import yamlr
 schema = yamlr.make_schema('./schema.yaml')
 
@@ -100,7 +100,7 @@ except YamlrError as e:
 
 You can also specify an optional `parser` if you'd like to use the `ruamel.yaml` (YAML 1.2 support) instead:
 ```python
-# Import Yamale and make a schema object, make sure ruamel.yaml is installed already.
+# Import Yamlr and make a schema object, make sure ruamel.yaml is installed already.
 import yamlr
 schema = yamlr.make_schema('./schema.yaml', parser='ruamel')
 
@@ -113,11 +113,8 @@ yamlr.validate(schema, data)
 
 ### Schema
 
-| :warning: Ensure that your schema definitions come from internal or trusted sources. Yamale does not protect against intentionally malicious schemas. |
-|:------------|
-
-To use Yamale you must make a schema. A schema is a valid YAML file with one or more documents
-inside. Each node terminates in a string which contains valid Yamale syntax. For example, `str()`
+To use Yamlr you must make a schema. A schema is a valid YAML file with one or more documents
+inside. Each node terminates in a string which contains valid Yamlr syntax. For example, `str()`
 represents a [String validator](#validators).
 
 A basic schema:
@@ -232,7 +229,7 @@ Here are all the validators Yamlr knows about. Every validator takes a `required
 Yamlr whether or not that node must exist. By default every node is required. Example: `str(required=False)`
 
 You can also require that an optional value is not `None` by using the `none` keyword. By default
-Yamale will accept `None` as a valid value for a key that's not required. Reject `None` values
+Yamlr will accept `None` as a valid value for a key that's not required. Reject `None` values
 with `none=False` in any validator. Example: `str(required=False, none=False)`.
 
 Some validators take keywords and some take arguments, some take both. For instance the `enum()`
@@ -445,9 +442,6 @@ schema = yamlr.make_schema('./schema.yaml', validators=validators)
 
 Examples
 --------
-
-| :warning: Ensure that your schema definitions come from internal or trusted sources. Yamale does not protect against intentionally malicious schemas. |
-|:------------|
 
 ### Using keywords
 #### Schema:

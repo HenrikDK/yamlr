@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from yamale import validators as val
+from yamlr import validators as val
 
 # Unit test the dictionary of default validators.
 def test_validator_defaults():

@@ -1,5 +1,5 @@
 import datetime
-from yamale import constraints as con
+from yamlr import constraints as con
 
 def test_length_min():
     constraint = con.default['length_min']

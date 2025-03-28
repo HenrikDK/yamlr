@@ -1,6 +1,6 @@
 import pytest
 
-from yamale import parser as par
+from yamlr import parser as par
 
 def test_basic_validators():
     assert par.parse("str()")['name'] == 'str'

@@ -1,6 +1,6 @@
 import io
 import pytest
-from yamale import readers as yaml_reader
+from yamlr import readers as yaml_reader
 
 parsers = ["pyyaml", "PyYAML"]
 TYPES = "tests/fixtures/types.yaml"

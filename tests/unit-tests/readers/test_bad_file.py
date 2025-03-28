@@ -1,6 +1,6 @@
 import pytest
 from pytest import raises
-from yamale.readers import parse_yaml
+from yamlr.readers import parse_yaml
 
 parsers = ["pyyaml", "PyYAML"]
 

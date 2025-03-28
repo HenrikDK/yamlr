@@ -1,4 +1,4 @@
-from yamlr import schema, readers, display
+from yamlr import schema, readers
 
 class YamlrError(ValueError):
     def __init__(self, results):

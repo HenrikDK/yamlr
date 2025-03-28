@@ -1,10 +1,10 @@
 import io
 import pytest
 import re
-from yamale import yamale
+from yamlr import yamlr
 
 from tests import get_fixture
-from yamale import validators as val
+from yamlr import validators as val
 
 types = {"schema": "types.yaml", "bad": "types_bad_data.yaml", "good": "types_good_data.yaml"}
 
@@ -122,7 +122,7 @@ test_data = [
 ]
 
 def test_flat_make_schema():
-    c_sch = yamale.make_schema(get_fixture(types["schema"]))
+    c_sch = yamlr.make_schema(get_fixture(types["schema"]))
     
     keys = c_sch['schema'].keys()
     assert len(keys) == 9
@@ -131,7 +131,7 @@ def test_flat_make_schema():
 
 
 def test_nested_schema():
-    c_sch = yamale.make_schema(get_fixture(nested["schema"]))
+    c_sch = yamlr.make_schema(get_fixture(nested["schema"]))
 
     nested_schema = c_sch['schema']
 
@@ -146,10 +146,10 @@ def test_good(data_map):
         if not k.startswith("good"):
             continue
         print()
-        schema = yamale.make_schema(get_fixture(data_map['schema']), debug=True)
-        data = yamale.make_data(get_fixture(data_map[k]))
+        schema = yamlr.make_schema(get_fixture(data_map['schema']), debug=True)
+        data = yamlr.make_data(get_fixture(data_map[k]))
 
-        yamale.validate(schema, data)
+        yamlr.validate(schema, data)
 
 def test_bad_validate():
     assert count_exception_lines(types["schema"], types["bad"]) == 9
@@ -208,12 +208,12 @@ def test_bad_include_validator():
 
 def test_bad_schema():
     with pytest.raises(SyntaxError) as excinfo:
-        yamale.make_schema(get_fixture("bad_schema.yaml"))
+        yamlr.make_schema(get_fixture("bad_schema.yaml"))
     assert "fixtures/bad_schema.yaml" in str(excinfo.value)
 
 def test_empty_schema():
     with pytest.raises(ValueError) as e:
-        yamale.make_schema(get_fixture("empty_schema.yaml"))
+        yamlr.make_schema(get_fixture("empty_schema.yaml"))
     
     assert 'empty_schema.yaml' in e.value.args[0]['path']
     assert e.value.args[0]['error'] == "is an empty file!"
@@ -223,7 +223,7 @@ def test_empty_schema():
 )
 def test_vulnerable_schema(schema_filename):
     with pytest.raises(SyntaxError) as excinfo:
-        yamale.make_schema(get_fixture(schema_filename))
+        yamlr.make_schema(get_fixture(schema_filename))
     assert schema_filename in str(excinfo.value)
 
 def test_list_is_not_a_map():
@@ -299,9 +299,9 @@ def test_bad_subset3():
 
 def test_nodef_subset_schema():
     with pytest.raises(ValueError) as e:
-        schema = yamale.make_schema(get_fixture(subset_nodef["schema"]), debug=True)
-        data = yamale.make_data(get_fixture(subset_nodef["schema"]))
-        yamale.validate(schema, data)
+        schema = yamlr.make_schema(get_fixture(subset_nodef["schema"]), debug=True)
+        data = yamlr.make_data(get_fixture(subset_nodef["schema"]))
+        yamlr.validate(schema, data)
 
     assert "subset requires at least one validator!" in str(e.value)
 
@@ -321,27 +321,27 @@ def test_validate_errors(use_schema_string, use_data_string, expected_message_re
     data_path = get_fixture("types_bad_data.yaml")
     if use_schema_string:
         with io.open(schema_path, encoding="utf-8") as f:
-            schema = yamale.make_schema(content=f.read())
+            schema = yamlr.make_schema(content=f.read())
     else:
-        schema = yamale.make_schema(schema_path)
+        schema = yamlr.make_schema(schema_path)
     if use_data_string:
         with io.open(data_path, encoding="utf-8") as f:
-            data = yamale.make_data(content=f.read())
+            data = yamlr.make_data(content=f.read())
     else:
-        data = yamale.make_data(data_path)
+        data = yamlr.make_data(data_path)
     with pytest.raises(yamlr.YamlrError) as excinfo:
-        yamale.validate(schema, data)
+        yamlr.validate(schema, data)
     assert re.match(expected_message_re, excinfo.value.message, re.MULTILINE), "Message {} should match {}".format(
         excinfo.value.message, expected_message_re
     )
 """
 
 def match_exception_lines(schema, data, expected=[], paths=[], strict=False):
-    c_sch = yamale.make_schema(get_fixture(schema), debug=True)
-    c_data = yamale.make_data(get_fixture(data))
+    c_sch = yamlr.make_schema(get_fixture(schema), debug=True)
+    c_data = yamlr.make_data(get_fixture(data))
 
     with pytest.raises(ValueError) as e:
-        yamale.validate(c_sch, c_data, strict)
+        yamlr.validate(c_sch, c_data, strict)
 
     got = e.value.results[0]['errors']
 
@@ -359,11 +359,11 @@ def match_exception_lines(schema, data, expected=[], paths=[], strict=False):
 
 
 def count_exception_lines(schema, data, strict=False):
-    c_sch = yamale.make_schema(get_fixture(schema))
-    c_data = yamale.make_data(get_fixture(data))
+    c_sch = yamlr.make_schema(get_fixture(schema))
+    c_data = yamlr.make_data(get_fixture(data))
 
     with pytest.raises(ValueError) as e:
-        yamale.validate(c_sch, c_data, strict)
+        yamlr.validate(c_sch, c_data, strict)
     
     print('value: ' + repr(e.value.results))
     result = e.value.results[0]

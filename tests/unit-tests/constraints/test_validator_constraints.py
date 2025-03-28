@@ -1,6 +1,6 @@
 import datetime
-from yamale import validators as val
-from yamale import constraints as con
+from yamlr import validators as val
+from yamlr import constraints as con
 
 
 def test_str_length_min():
