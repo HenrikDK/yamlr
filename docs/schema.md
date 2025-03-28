@@ -2,7 +2,9 @@
 
 To use Yamlr you must make a schema. A schema is a valid YAML file with one or more documents
 inside. Each node terminates in a string which contains valid Yamlr syntax. For example, `str()`
-represents a [String validator](#validators).
+represents a [String validator](./validators.md). 
+
+The full list of all currently supported validators can be found [here](validators.md)
 
 A basic schema:
 ```yaml
@@ -20,7 +22,7 @@ height: 6.2
 awesome: True
 ```
 
-Take a look at the [Examples](#examples) section for more complex schema ideas.
+Take a look at the [Examples](./examples.md) section for more complex schema ideas.
 
 #### Includes
 Schema files may contain more than one YAML document (nodes separated by `---`). The first document
