@@ -46,20 +46,12 @@ try:
     yamlr.validate(schema, data)
     print('Validation success! 👍')
 except ValueError as e:
-    print('Validation failed!\n%s' % str(e))
-    exit(1)
-```
-and an array of `ValidationResult`.
-```python
-try:
-    yamlr.validate(schema, data)
-    print('Validation success! 👍')
-except YamlrError as e:
-    print('Validation failed!\n')
+    print('Validation failed! ️‍🔥\n')
     for result in e.results:
-        print("Error validating data '%s' with '%s'\n\t" % (result.data, result.schema))
-        for error in result.errors:
-            print('\t%s' % error)
+        print(f'{result['data_path']}:')
+        for e in result['errors']:
+            print(f"{e['path']}: {e['error']}")
+    
     exit(1)
 ```
 
