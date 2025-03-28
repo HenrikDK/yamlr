@@ -48,13 +48,14 @@ jobs:
         with:
           python-version: '3.11'
       
-      - name: Zip Contents into deploy.zip
-        if: matrix.jobs.type == 'release'
+      - name: Zip Contents into yamlr.zip
+        shell: bash
         run: |
           ls -R
-          zip deploy.zip -r yamlr
+          zip yamlr.zip -r yamlr
 
-      - run: python3 tools/create_release.py
+      - name: Release version
         shell: bash
+        run: python3 tools/create_release.py
         env:
           APP_TOKEN: github.token
