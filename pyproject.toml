@@ -1,9 +1,9 @@
 [project]
 name = "yamlr"
-version = "0.1.0"
+version = "0.2.0"
 description = "yamlr a yaml schema validator"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
     "pyyaml>=6.0.2",
 ]
