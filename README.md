@@ -66,7 +66,7 @@ It is also possible to mix strict and non-strict mode by setting the strict=True
 # Documentation
 - [Installation](#installation)
 - [Usage](#usage)
-- [Creating a Schema](docs/schema.md)
-- [Common Schema Examples](docs/examples.md)
-- [List of Validators supported by yamlr](docs/validators.md)
+- [Creating a schema](docs/schema.md)
+- [Common schema examples](docs/examples.md)
+- [List of validators supported by yamlr](docs/validators.md)
 - [Extending with custom validators](docs/extending.md)
