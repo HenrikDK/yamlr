@@ -2,8 +2,8 @@ import os
 import contextlib
 import pytest
 
-from yamale import __main__ as command_line
-from yamale import YamaleError
+from yamlr import __main__ as command_line
+from yamlr import YamlrError
 
 parsers = ["pyyaml", "PyYAML"]
 
@@ -128,7 +128,7 @@ def test_bad_strict():
 
 
 def test_bad_issue_54():
-    with pytest.raises(YamaleError) as e:
+    with pytest.raises(YamlrError) as e:
         command_line._router(
             "tests/fixtures/nested_issue_54.yaml",
             "tests/fixtures/nested.yaml",

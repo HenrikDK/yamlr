@@ -1,10 +1,10 @@
 import os
 import pytest
-from yamale import YamaleError
+from yamale import YamlrError
 import yamale
 
 def test_keyed_subset_with_include_should_fail_with_correct_message():
-    with pytest.raises(YamaleError) as e:
+    with pytest.raises(YamlrError) as e:
         schema = yamale.make_schema("tests/fixtures/keyed/schema_keyed_subset_with_include.yaml", debug=True)
         data = yamale.make_data("tests/fixtures/keyed/data_keyed_subset_with_include_bad.yaml")
         yamale.validate(schema, data)
@@ -26,7 +26,7 @@ def test_keyed_subset_with_include_should_succeed():
         assert r['is_valid']
 
 def test_keyed_any_with_include_should_fail_with_correct_message():
-    with pytest.raises(YamaleError) as e:
+    with pytest.raises(YamlrError) as e:
         schema = yamale.make_schema("tests/fixtures/keyed/schema_keyed_any_with_include.yaml")
         data = yamale.make_data("tests/fixtures/keyed/data_keyed_any_with_include_bad.yaml")
         yamale.validate(schema, data)

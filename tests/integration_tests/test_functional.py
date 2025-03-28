@@ -329,7 +329,7 @@ def test_validate_errors(use_schema_string, use_data_string, expected_message_re
             data = yamale.make_data(content=f.read())
     else:
         data = yamale.make_data(data_path)
-    with pytest.raises(yamale.YamaleError) as excinfo:
+    with pytest.raises(yamlr.YamlrError) as excinfo:
         yamale.validate(schema, data)
     assert re.match(expected_message_re, excinfo.value.message, re.MULTILINE), "Message {} should match {}".format(
         excinfo.value.message, expected_message_re
