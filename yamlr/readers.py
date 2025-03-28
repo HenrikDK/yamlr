@@ -5,13 +5,6 @@ from yamlr import validators as val
 from yamlr import constraints as con
 from yaml.loader import SafeLoader
 
-class SafeLineLoader(SafeLoader):
-    def construct_mapping(self, node, deep=False):
-        mapping = super(SafeLoader, self).construct_mapping(node, deep=deep)
-        # Add 1 so line numbering starts at 1
-        mapping['_lineno'] = node.start_mark.line + 1
-        return mapping
-
 """
 Read yaml file using pyaml.
 """
@@ -19,7 +12,7 @@ def _parse_yaml(f, type):
     if type == 'schema':
         return list(yaml.load_all(f, Loader=SafeLoader))
     
-    return list(yaml.load_all(f, Loader=SafeLineLoader))
+    return list(yaml.load_all(f, Loader=SafeLoader))
 
 def parse_yaml(path=None, content=None, type='schema'):
     if (path is None and content is None) or (path is not None and content is not None):

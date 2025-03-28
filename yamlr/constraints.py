@@ -47,7 +47,6 @@ def validate_length_min(c_sch, c_val, value):
     c_value = value
     if isinstance(value, dict):
         c_value = value.copy()
-        c_value.pop('_lineno', None)
 
     valid = min <= len(c_value)
     if not valid:
@@ -61,7 +60,6 @@ def validate_length_max(c_sch, c_val, value):
     c_value = value
     if isinstance(value, dict):
         c_value = value.copy()
-        c_value.pop('_lineno', None)
 
     valid = max >= len(c_value)
     if not valid:
@@ -195,8 +193,6 @@ def validate_key(c_sch, c_val, value):
     valid = True
     error_list = []
     for k in value.keys():
-        if k == '_lineno':
-            continue
         val_err = val.validate(c_sch, key, k)
         if val_err != []:
             error_list.extend(val_err)
