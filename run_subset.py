@@ -1,5 +1,4 @@
 import yamlr
-from yamlr import display
 
 schema = {}
 
@@ -7,13 +6,14 @@ schema = yamlr.make_schema('tests/fixtures/keyed/schema_keyed_any_with_include.y
 
 data = yamlr.make_data('tests/fixtures/keyed/data_keyed_any_with_include_bad.yaml')
 
-results = yamlr.validate(schema, data, True, False)
-
-for result in results:
-    if len(result['errors']) == 0:
-        print(f"{result['data_path']} 👍")
-        continue
+try:
+    yamlr.validate(schema, data)
     
-    print(f'{result['data_path']} ️‍🔥:\n')
-    display.show_file_errors(result)
+    print('Validation success! 👍')
+except ValueError as e:
+    print('Validation failed! ️‍🔥\n')
+    for result in e.results:
+        print(f'{result['data_path']}:')
+        for e in result['errors']:
+            print(f"{e['path']}: {e['error']}")
     exit(1)
