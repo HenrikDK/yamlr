@@ -62,3 +62,11 @@ After you construct a schema you can add extra, external include definitions by 
 By default Yamlr will provide errors for extra elements present in lists and maps that are not covered by the schema. Strict mode can be toggled by passing the strict=True/False flag to the validate function.
 
 It is also possible to mix strict and non-strict mode by setting the strict=True/False flag in the include validator, setting the option only for the included validators.
+
+# Documentation
+[Installation](#installation)
+[Usage](#usage)
+[Examples](docs/examples.md)
+[Extending](docs/extending.md)
+[Schema](docs/schema.md)
+[Validators](docs/validators.md)
