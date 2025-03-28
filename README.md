@@ -1,4 +1,6 @@
 # Yamlr - Fork and refactor of Yamale (ya·ma·lē)
+[![Build Status](https://github.com/HenrikDK/Yamlr/actions/workflows/ci-build.yml/badge.svg)](https://github.com/HenrikDK/Yamlr/actions/workflows/ci-build.yml)
+[![license](https://img.shields.io/github/license/HenrikDK/yamlr.svg)](https://github.com/HenrikDK/Yamlr/blob/main/LICENSE)
 
 ## Changes:
 - Changed: Made validators more flexible, no more classes & inheritance, just function pointers and native collection types.
