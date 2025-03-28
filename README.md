@@ -2,11 +2,6 @@
 [![CI Build](https://github.com/HenrikDK/yamlr/actions/workflows/ci-build.yaml/badge.svg)](https://github.com/HenrikDK/yamlr/actions/workflows/ci-build.yaml)
 [![license](https://img.shields.io/github/license/HenrikDK/yamlr.svg)](https://github.com/HenrikDK/Yamlr/blob/main/LICENSE)
 
-## Changes:
-- Changed: Made validators more flexible, no more classes & inheritance, just function pointers and native collection types.
-- Added: debug trace for validation flow
-- Removed use of eval and compile of ast trees to setup validator (improving security concerns greatly) 
-
 Requirements
 ------------
 * Python 3.11+
@@ -16,42 +11,12 @@ Requirements
 1. Download latest version of Yamlr from: https://github.com/HenrikDK/yamlr/releases/
 2. Unzip to a folder in you python path
 
-Usage
------
-### Command line
-Yamlr can be run from the command line to validate one or many YAML files. Yamlr will search the
-directory you supply (current directory is default) for YAML files. Each YAML file it finds it will
-look in the same directory as that file for its schema, if there is no schema Yamlr will keep
-looking up the directory tree until it finds one. If Yamlr can not find a schema it will tell you.
+## Usage
 
-Usage:
+1. Make a [schema](docs/schema.md)
+2. Make some data that conforms to that schema
 
-```bash
-usage: yamlr [-h] [-s SCHEMA] [-n CPU_NUM] [-p PARSER] [--no-strict] [PATH]
-
-Validate yaml files.
-
-positional arguments:
-  PATH                  folder to validate. Default is current directory.
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -s SCHEMA, --schema SCHEMA
-                        filename of schema. Default is schema.yaml.
-  -n CPU_NUM, --cpu-num CPU_NUM
-                        number of CPUs to use. Default is 4.
-  -p PARSER, --parser PARSER
-                        YAML library to load files. Choices are "ruamel" or
-                        "pyyaml" (default).
-  --no-strict           Disable strict mode, unexpected elements in the data
-                        will be accepted.
-```
-
-### API
-There are several ways to feed Yamlr schema and data files. The simplest way is to let Yamlr take
-care of reading and parsing your YAML files.
-
-All you need to do is supply the files' path:
+Then all you need to do is supply the files' path:
 ```python
 # Import Yamlr and make a schema object:
 import yamlr
@@ -64,7 +29,7 @@ data = yamlr.make_data('./data.yaml')
 yamlr.validate(schema, data)
 ```
 
-You can pass a string of YAML to `make_schema()` and `make_data()` instead of passing a file path
+You can also pass a string of YAML to `make_schema()` and `make_data()` instead of passing a file path
 by using the `content=` parameter:
 
 ```python
@@ -100,130 +65,12 @@ except YamlrError as e:
     exit(1)
 ```
 
-You can also specify an optional `parser` if you'd like to use the `ruamel.yaml` (YAML 1.2 support) instead:
-```python
-# Import Yamlr and make a schema object, make sure ruamel.yaml is installed already.
-import yamlr
-schema = yamlr.make_schema('./schema.yaml', parser='ruamel')
-
-# Create a Data object
-data = yamlr.make_data('./data.yaml', parser='ruamel')
-
-# Validate data against the schema same as before.
-yamlr.validate(schema, data)
-```
-
-### Schema
-
-To use Yamlr you must make a schema. A schema is a valid YAML file with one or more documents
-inside. Each node terminates in a string which contains valid Yamlr syntax. For example, `str()`
-represents a [String validator](#validators).
-
-A basic schema:
-```yaml
-name: str()
-age: int(max=200)
-height: num()
-awesome: bool()
-```
-
-And some YAML that validates:
-```yaml
-name: Bill
-age: 26
-height: 6.2
-awesome: True
-```
-
-Take a look at the [Examples](#examples) section for more complex schema ideas.
-
-#### Includes
-Schema files may contain more than one YAML document (nodes separated by `---`). The first document
-found will be the base schema. Any additional documents will be treated as Includes. Includes allow
-you to define a valid structure once and use it several times. They also allow you to do recursion.
-
-A schema with an Include validator:
-```yaml
-person1: include('person')
-person2: include('person')
----
-person:
-    name: str()
-    age: int()
-```
-
-Some valid YAML:
-```yaml
-person1:
-    name: Bill
-    age: 70
-
-person2:
-    name: Jill
-    age: 20
-```
-
-Every root node not in the first YAML document will be treated like an include:
-```yaml
-person: include('friend')
-group: include('family')
----
-friend:
-    name: str()
-family:
-    name: str()
-```
-
-Is equivalent to:
-```yaml
-person: include('friend')
-group: include('family')
----
-friend:
-    name: str()
----
-family:
-    name: str()
-```
-
-##### Recursion
-You can get recursion using the Include validator.
-
-This schema:
-```yaml
-person: include('human')
----
-human:
-    name: str()
-    age: int()
-    friend: include('human', required=False)
-```
-
-Will validate this data:
-```yaml
-person:
-    name: Bill
-    age: 50
-    friend:
-        name: Jill
-        age: 20
-        friend:
-            name: Will
-            age: 10
-```
-
-##### Adding external includes
-After you construct a schema you can add extra, external include definitions by calling
-`schema.add_include(dict)`. This method takes a dictionary and adds each key as another include.
-
 ### Strict mode
-By default Yamlr will provide errors for extra elements present in lists and maps that are not
-covered by the schema. With strict mode disabled (using the `--no-strict` command line option),
-additional elements will not cause any errors. In the API, strict mode can be toggled by passing
-the strict=True/False flag to the validate function.
+By default Yamlr will provide errors for extra elements present in lists and maps that are not covered by the schema. Strict mode can be toggled by passing the strict=True/False flag to the validate function.
 
-It is possible to mix strict and non-strict mode by setting the strict=True/False flag in the
-include validator, setting the option only for the included validators.
+It is also possible to mix strict and non-strict mode by setting the strict=True/False flag in the include validator, setting the option only for the included validators.
+
+
 
 Validators
 ----------
