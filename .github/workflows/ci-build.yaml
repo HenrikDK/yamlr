@@ -55,7 +55,7 @@ jobs:
       issues: write
       pull-requests: write
 
-    if: github.ref == 'main'
+    if: github.ref_name == 'main'
 
     steps:
       - uses: actions/checkout@v4
