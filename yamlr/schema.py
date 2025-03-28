@@ -1,5 +1,5 @@
-from yamale import util
-from yamale import validators as val
+from yamlr import util
+from yamlr import validators as val
 
 class FatalValidationError(Exception):
     def __init__(self, error):
@@ -7,7 +7,7 @@ class FatalValidationError(Exception):
         self.error = error
 
 # validate schema
-def validate(c_sch, data, data_name, strict):
+def validate(c_sch, data, data_path, strict):
     c_sch['log'].append(f"{'s-V':10} - state: {c_sch.keys()}")
 
     path = util.get_path()
@@ -15,7 +15,7 @@ def validate(c_sch, data, data_name, strict):
         errors = _validate(c_sch, c_sch['schema'], data, path, strict, 0)
     except FatalValidationError as e:
         errors = [{'error': e.error, 'path': '', 'lineno': None}]
-    result = {'data_name':data_name, 'name': c_sch['name'], 'errors': errors, 'is_valid': len(errors) == 0}
+    result = {'data_path':data_path, 'name': c_sch['name'], 'errors': errors, 'is_valid': len(errors) == 0}
     return result
 
 # Validate data with validator, returns an array of errors.

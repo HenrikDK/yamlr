@@ -1,7 +1,7 @@
 import re
 import ipaddress
 from datetime import date, datetime
-from yamale import util
+from yamlr import util
 
 # ABCs for containers were moved to their own module
 try:

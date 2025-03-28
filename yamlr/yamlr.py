@@ -1,8 +1,8 @@
-from yamale import schema, readers
+from yamlr import schema, readers, display
 
-class YamaleError(ValueError):
+class YamlrError(ValueError):
     def __init__(self, results):
-        super(YamaleError, self).__init__("\n".join([str(x) for x in list(results)]))
+        super(YamlrError, self).__init__("\n".join([str(x) for x in list(results)]))
         self.message = self.args[0]
         self.results = results
 
@@ -45,5 +45,6 @@ def validate(c_sch, data, strict=True, _raise_error=True):
             print(l)
 
     if _raise_error and not is_valid:
-        raise YamaleError(results)
+        raise YamlrError(results)
+    
     return results

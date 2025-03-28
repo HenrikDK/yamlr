@@ -1,8 +1,8 @@
 import re
 import ipaddress
 from datetime import date, datetime
-from yamale import util
-from yamale import validators as val
+from yamlr import util
+from yamlr import validators as val
 
 def validate_min(c_sch, c_val, value):
     errors = []

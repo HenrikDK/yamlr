@@ -2,9 +2,9 @@ import argparse
 import glob
 import os
 from multiprocessing import Pool
-from yamale.yamale import YamaleError
+from yamlr.yamlr import YamlrError
 
-import yamale.yamale as yamale
+import yamlr.yamlr as yamlr
 
 schemas = {}
 
@@ -13,15 +13,15 @@ def _validate(schema_path, data_path, strict, _raise_error):
     schema = schemas.get(schema_path)
     try:
         if not schema:
-            schema = yamale.make_schema(schema_path)
+            schema = yamlr.make_schema(schema_path)
             schemas[schema_path] = schema
     except (SyntaxError, ValueError) as e:
         results = [[str(e)]]
         if not _raise_error:
             return results
-        raise YamaleError(results)
-    data = yamale.make_data(data_path)
-    return yamale.validate(schema, data, strict, _raise_error)
+        raise YamlrError(results)
+    data = yamlr.make_data(data_path)
+    return yamlr.validate(schema, data, strict, _raise_error)
 
 
 def _find_data_path_schema(data_path, schema_name):

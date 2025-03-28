@@ -1,5 +1,5 @@
 import ast
-from yamale import validators as val
+from yamlr import validators as val
 
 
 def _extract_expression(call_node, validators):

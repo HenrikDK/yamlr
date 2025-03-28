@@ -63,6 +63,10 @@ def get_keys(obj):
     elif is_list(obj):
         return range(len(obj))
 
+def read_file(path):
+    with open(path, 'r') as source:
+        filedata = source.read()
+        return filedata
 
 def get_iter(iterable):
     if isinstance(iterable, Mapping):

@@ -1,8 +1,8 @@
 import yaml
 from io import StringIO
-from yamale import util, parser
-from yamale import validators as val
-from yamale import constraints as con
+from yamlr import util, parser
+from yamlr import validators as val
+from yamlr import constraints as con
 from yaml.loader import SafeLoader
 
 class SafeLineLoader(SafeLoader):
