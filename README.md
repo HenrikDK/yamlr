@@ -1,44 +1,31 @@
-# Fork of Yamale (ya·ma·lē)
+# Yamlr - Fork and refactor of Yamale (ya·ma·lē)
 
-Readme docs kept unchanged:
+## Changes:
+- Changed: Made validators more flexible, no more classes & inheritance, just function pointers and native collection types.
+- Added: debug trace for validation flow
+- Removed use of eval and compile of ast trees to setup validator (improving security concerns greatly) 
 
 Requirements
 ------------
-* Python 3.8+
+* Python 3.11+
 * PyYAML
-* ruamel.yaml (optional)
-
-Install
--------
-### pip
-```bash
-$ pip install yamale
-```
-
-NOTE: Some platforms, e.g., Mac OS, may ship with only Python 2 and may not have pip installed.
-Installation of Python 3 should also install pip. To preserve any system dependencies on default
-software, consider installing Python 3 as a local package. Please note replacing system-provided
-Python may disrupt other software. Mac OS users may wish to investigate MacPorts, homebrew, or
-building Python 3 from source; in all three cases, Apple's Command Line Tools (CLT) for Xcode
-may be required. See also [developers](#developers), below.
 
 ### Manual
-1. Download Yamale from: https://github.com/23andMe/Yamale/archive/master.zip
-2. Unzip somewhere temporary
-3. Run `python setup.py install` (may have to prepend `sudo`)
+1. Download latest version of Yamlr from: https://github.com/HenrikDK/yamlr/releases/
+2. Unzip to a folder in you python path
 
 Usage
 -----
 ### Command line
-Yamale can be run from the command line to validate one or many YAML files. Yamale will search the
+Yamlr can be run from the command line to validate one or many YAML files. Yamlr will search the
 directory you supply (current directory is default) for YAML files. Each YAML file it finds it will
-look in the same directory as that file for its schema, if there is no schema Yamale will keep
-looking up the directory tree until it finds one. If Yamale can not find a schema it will tell you.
+look in the same directory as that file for its schema, if there is no schema Yamlr will keep
+looking up the directory tree until it finds one. If Yamlr can not find a schema it will tell you.
 
 Usage:
 
 ```bash
-usage: yamale [-h] [-s SCHEMA] [-n CPU_NUM] [-p PARSER] [--no-strict] [PATH]
+usage: yamlr [-h] [-s SCHEMA] [-n CPU_NUM] [-p PARSER] [--no-strict] [PATH]
 
 Validate yaml files.
 
@@ -59,27 +46,27 @@ optional arguments:
 ```
 
 ### API
-There are several ways to feed Yamale schema and data files. The simplest way is to let Yamale take
+There are several ways to feed Yamlr schema and data files. The simplest way is to let Yamlr take
 care of reading and parsing your YAML files.
 
 All you need to do is supply the files' path:
 ```python
 # Import Yamale and make a schema object:
-import yamale
-schema = yamale.make_schema('./schema.yaml')
+import yamlr
+schema = yamlr.make_schema('./schema.yaml')
 
 # Create a Data object
-data = yamale.make_data('./data.yaml')
+data = yamlr.make_data('./data.yaml')
 
 # Validate data against the schema. Throws a ValueError if data is invalid.
-yamale.validate(schema, data)
+yamlr.validate(schema, data)
 ```
 
 You can pass a string of YAML to `make_schema()` and `make_data()` instead of passing a file path
 by using the `content=` parameter:
 
 ```python
-data = yamale.make_data(content="""
+data = yamlr.make_data(content="""
 name: Bill
 age: 26
 height: 6.2
@@ -87,11 +74,11 @@ awesome: True
 """)
 ```
 
-If `data` is valid, nothing will happen. However, if `data` is invalid Yamale will throw a
-`YamaleError` with a message containing all the invalid nodes:
+If `data` is valid, nothing will happen. However, if `data` is invalid Yamlr will throw a
+`YamlrError` with a message containing all the invalid nodes:
 ```python
 try:
-    yamale.validate(schema, data)
+    yamlr.validate(schema, data)
     print('Validation success! 👍')
 except ValueError as e:
     print('Validation failed!\n%s' % str(e))
@@ -100,9 +87,9 @@ except ValueError as e:
 and an array of `ValidationResult`.
 ```python
 try:
-    yamale.validate(schema, data)
+    yamlr.validate(schema, data)
     print('Validation success! 👍')
-except YamaleError as e:
+except YamlrError as e:
     print('Validation failed!\n')
     for result in e.results:
         print("Error validating data '%s' with '%s'\n\t" % (result.data, result.schema))
@@ -114,14 +101,14 @@ except YamaleError as e:
 You can also specify an optional `parser` if you'd like to use the `ruamel.yaml` (YAML 1.2 support) instead:
 ```python
 # Import Yamale and make a schema object, make sure ruamel.yaml is installed already.
-import yamale
-schema = yamale.make_schema('./schema.yaml', parser='ruamel')
+import yamlr
+schema = yamlr.make_schema('./schema.yaml', parser='ruamel')
 
 # Create a Data object
-data = yamale.make_data('./data.yaml', parser='ruamel')
+data = yamlr.make_data('./data.yaml', parser='ruamel')
 
 # Validate data against the schema same as before.
-yamale.validate(schema, data)
+yamlr.validate(schema, data)
 ```
 
 ### Schema
@@ -231,7 +218,7 @@ After you construct a schema you can add extra, external include definitions by 
 `schema.add_include(dict)`. This method takes a dictionary and adds each key as another include.
 
 ### Strict mode
-By default Yamale will provide errors for extra elements present in lists and maps that are not
+By default Yamlr will provide errors for extra elements present in lists and maps that are not
 covered by the schema. With strict mode disabled (using the `--no-strict` command line option),
 additional elements will not cause any errors. In the API, strict mode can be toggled by passing
 the strict=True/False flag to the validate function.
@@ -241,8 +228,8 @@ include validator, setting the option only for the included validators.
 
 Validators
 ----------
-Here are all the validators Yamale knows about. Every validator takes a `required` keyword telling
-Yamale whether or not that node must exist. By default every node is required. Example: `str(required=False)`
+Here are all the validators Yamlr knows about. Every validator takes a `required` keyword telling
+Yamlr whether or not that node must exist. By default every node is required. Example: `str(required=False)`
 
 You can also require that an optional value is not `None` by using the `none` keyword. By default
 Yamale will accept `None` as a valid value for a key that's not required. Reject `None` values
@@ -435,20 +422,24 @@ It is also possible to add your own custom validators. This is an advanced topic
 example of adding a `Date` validator and using it in a schema as `date()`
 
 ```python
-import yamale
+import yamlr
 import datetime
-from yamale.validators import DefaultValidators, Validator
+from yamlr import validators as val
 
-class Date(Validator):
-    """ Custom Date validator """
-    tag = 'date'
+""" Custom Date validator """
+def validate_date(c_sch, c_val, value):
+     
+    valid = isinstance(value, datetime.date)
+    errors = []
+    if not valid:
+        error = "'%s' is not a valid date." % (value)
+        errors.append(error)
+    return errors
 
-    def _is_valid(self, value):
-        return isinstance(value, datetime.date)
+validators = val.default.copy() # This is a dictionary
+validators['date'] = {'func': validate_date, 'constraints': [], '_type': 'validator'}
 
-validators = DefaultValidators.copy()  # This is a dictionary
-validators[Date.tag] = Date
-schema = yamale.make_schema('./schema.yaml', validators=validators)
+schema = yamlr.make_schema('./schema.yaml', validators=validators)
 # Then use `schema` as normal
 ```
 
