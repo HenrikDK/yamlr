@@ -10,8 +10,10 @@ gh_headers =  {
 }
 
 
-def create_release(org, repo, tag = 'latest'):
+def create_release(org, repo, version):
     if gh_token == 'debug': return None
+
+    tag = f'v{version}'
 
     url = f"https://api.github.com/repos/{org}/{repo}/releases"
 
