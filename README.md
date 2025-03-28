@@ -1,5 +1,5 @@
 # Yamlr - Fork and refactor of Yamale (ya·ma·lē)
-[![Build Status](https://github.com/HenrikDK/Yamlr/actions/workflows/ci-build.yml/badge.svg)](https://github.com/HenrikDK/Yamlr/actions/workflows/ci-build.yml)
+[![CI Build](https://github.com/HenrikDK/yamlr/actions/workflows/ci-build.yaml/badge.svg)](https://github.com/HenrikDK/yamlr/actions/workflows/ci-build.yaml)
 [![license](https://img.shields.io/github/license/HenrikDK/yamlr.svg)](https://github.com/HenrikDK/Yamlr/blob/main/LICENSE)
 
 ## Changes:
