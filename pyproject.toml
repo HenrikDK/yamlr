@@ -1,7 +1,7 @@
 [project]
-name = "yamale"
+name = "yamlr"
 version = "0.1.0"
-description = "Add your description here"
+description = "yamlr a yaml schema validator"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
