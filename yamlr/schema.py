@@ -148,8 +148,13 @@ def _validate_any(c_sch, c_val, data, path, strict):
     sub_errors = []
     for s_val in validators:
         err = _validate(c_sch, s_val, data, path, strict)
-        if err:
-            sub_errors.append(err)
+        if not err: continue
+        sub_errors.append(err)
+
+    i_validators = [x for x in c_val['children'] if x['name'] == 'include']
+    key = c_val['kw_args'].get('key', None)
+    if len(validators) == 0 and len(i_validators) > 0 and key and key in data:
+        errors += [{'error': f"No match for '{key}: {data[key]}'", 'path': path}]
 
     if len(sub_errors) == len(validators):
         # All validators failed, add to errors
@@ -172,10 +177,18 @@ def _validate_subset(c_sch, c_val, data, path, strict):
         for s_val in validators:
             err = _validate(c_sch, s_val, internal_data, path, strict)
             if not err:
+                sub_errors = []
                 break
             sub_errors += err
-        else:
+        
+        if len(sub_errors) > 0:
             return sub_errors
+
+        i_validators = [x for x in c_val['children'] if x['name'] == 'include']
+        key = c_val['kw_args'].get('key', None)
+        if len(validators) == 0 and len(i_validators) > 0 and key and key in internal_data:
+            return [{'error': f"No match for '{key}: {internal_data[key]}'", 'path': path}]
+
         return []
 
     if len(c_val['children']) == 0:
@@ -217,7 +230,8 @@ def _get_include_validators_for_key(c_sch, c_val, internal_data):
         errors = _validate_primitive(c_sch, field_validator, field_value, '')
         if len(errors) == 0:
             result.append(s_val)
-    
+
+    #if key and key in internal_data and len(result) == 0:
     c_sch['log'].append(f"{'s-givfk|r':10} - {result}")
     return result
 
